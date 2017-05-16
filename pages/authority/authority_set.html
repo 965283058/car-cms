@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="js/auth_set.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/basic.css">
+    <link rel="stylesheet" type="text/css" href="../../css/layout.css">
+    <title>管理权限</title>
+    <style>
+        .authority_list {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .authority_list label {
+            margin: 10px 20px 10px 10px;
+            width: 15%;
+        }
+
+        .save_btns {
+            padding-right: 40%;
+            text-align: center;
+        }
+
+        .save_btns .btn {
+            margin-right: 30px;
+        }
+        h3{
+            font-size: 18px;
+            line-height: 40px;
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+        h3 span{
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body class="easyui-layout">
+<div id="authTabs" class="easyui-tabs" data-options="fit:true">
+    <!--**********************************读权限********************************-->
+    <div class="authTab" title="读权限">
+        <h3>为用户设置读权限</h3>
+        <hr/>
+        <div id="read_wrap">
+
+        </div>
+
+        <!-- end list-->
+        <p class="save_btns">
+            <a href="master_list.html" type="button" class="btn btn-primary">
+                返回管理员列表
+            </a>
+            <button type="button" id="btnSaveRead" class="btn btn-primary ">
+                保存
+            </button>
+        </p>
+
+    </div>
+
+    <!--写权限-->
+    <div class="authTab" title="写权限" style="padding:20px">
+        <h3>为用户设置写权限</h3>
+        <hr/>
+        <div id="write_wrap">
+
+        </div>
+        <!-- end list-->
+        <p class="save_btns">
+            <a  href="master_list.html" type="button" class="btn btn-primary">
+                返回管理员列表
+            </a>
+            <button type="button" id="btnSaveWrite" class="btn btn-primary">
+                保存
+            </button>
+        </p>
+
+    </div>
+
+    <!--不加密权限-->
+    <div class="authTab" title="不加密权限" style="padding:20px">
+        <h3>为用户设置读权限</h3>
+        <hr/>
+        <div id="encrypt_wrap">
+
+        </div>
+        <!-- end list-->
+        <p class="save_btns">
+            <a  href="master_list.html" type="button" class="btn btn-primary">
+                返回管理员列表
+            </a>
+            <button type="button" id="btnSaveEncrypt" class="btn btn-primary">
+                保存
+            </button>
+        </p>
+
+    </div><!--end 不加密权限-->
+    <!--授权权限-->
+    <div class="authTab" title="授权权限" style="padding:20px">
+        <h3>为用户设置读权限</h3>
+        <hr/>
+        <div id="author_wrap">
+
+        </div>
+        <!-- end list-->
+        <p class="save_btns">
+            <a href="master_list.html" type="button" class="btn btn-primary">
+                返回管理员列表
+            </a>
+            <button type="button" id="btnSaveAuthor" class="btn btn-primary">
+                保存
+            </button>
+        </p>
+
+    </div><!--end 授权权限-->
+
+</div>
+</body>
+<script>
+
+
+
+
+
+
+    $(function () {
+        AuthSet.setTitle();
+        var isPowerful=common.isPowerful();
+        if(isPowerful){
+            AuthSet.renderEncryptList();
+            AuthSet.renderAuthorList();
+        }else{
+            $("#authTabs").tabs("close",'不加密权限');
+            $("#authTabs").tabs("close",'授权权限');
+        }
+        AuthSet.renderReadList();
+        AuthSet.renderWriteList();
+
+        AuthSet.bindSaveHandler();
+        $('#authTabs').tabs({
+            onSelect: function(title,index){
+                switch(title){
+                    case "读权限":
+                        AuthSet.renderReadList()
+                        break;
+                    case "写权限":
+                        AuthSet.renderWriteList()
+                        break;
+                    case "不加密权限":
+                        AuthSet.renderEncryptList()
+                        break;
+                    case "授权权限":
+                        AuthSet.renderAuthorList()
+                        break;
+                }
+            }
+        });
+
+
+
+    });
+
+
+</script>
+
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>还款试算</title>
+    <link rel="stylesheet" type="text/css" href="../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <script type="text/javascript" src="js/datagrid-detailview.js"></script>
+    <script type="text/javascript" src="js/repayCommon.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/userIcon.css">
+
+</head>
+<body>
+<div id="container" class="container">
+    <div class="searchBox">
+        <div>
+            <select class="easyui-combobox" data-options="editable:false,width:200,panelHeight:80" id="searchType">
+                <option value="NICKNAME">昵称</option>
+                <option value="MOBILE">手机号码</option>
+                <option value="IDCARD">身份证号</option>
+            </select>
+        </div>
+
+        <div>
+            <input type="text" class="searchValue" id="searchValue"/>
+            <button class="hk-btn search" id="btnSearch">搜索
+            </button>
+
+            <button class="hk-btn reset" id="btnReset">重置
+            </button>
+        </div>
+    </div>
+    <div class="searchResult">
+        <div class="moneyWarp">
+            <span class="caption">应还总额：</span>
+            <span id="money" class="money">0.00</span>
+            <span class="caption"> 当前逾期总笔数：</span>
+            <span id="count" class="money">0</span>
+            <span class="caption"> 当前逾期总金额：</span>
+            <span id="overMoney" class="money">0.00</span>
+            <button class="hk-btn compute" id="btnCompute">计算
+            </button>
+        </div>
+        <div class="dgWarp">
+            <div class="dgTitle">账单记录</div>
+            <div class="dgBox">
+                <div id="billLog"></div>
+            </div>
+        </div>
+        <div class="dgWarp">
+            <div class="dgTitle">现金分期</div>
+            <div class="dgBox">
+                <div id="installment"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</body>
+<script>
+    $(function () {
+        $("#billLog").datagrid({
+            rownumbers: false,
+            columns: [[
+                {
+                    field: 'cbo',
+                    checkbox: true
+                },
+                {
+                    field: 'number',
+                    title: '序号',
+                    width: '3%',
+                    align: 'center'
+                },
+                {
+                    field: 'billType',
+                    title: '账单类型',
+                    width: '24%',
+                    align: 'center'
+                },
+                {
+                    field: 'billMonth',
+                    title: '账单月份',
+                    width: '24%',
+                    align: 'center'
+                },
+                {
+                    field: 'dueDate',
+                    title: '到期还款日',
+                    width: '24%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return convertToCNDate(value, "date")
+                    }
+                },
+                {
+                    field: 'billAmount',
+                    title: '应还总额',
+                    width: '24%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return (parseFloat(value) || 0).toFixed(2)
+                    }
+                },
+            ]],
+            onBeforeSelect: function (index, row) {
+                if (!parseFloat(row.billAmount)) {
+                    return false;
+                }
+            },
+            onCheck: function (index, row) {
+                if (!parseFloat(row.billAmount)) {
+                    $(this).datagrid("uncheckRow", index);
+                    $(this).datagrid("unselectRow", index);
+                }
+            },
+            onCheckAll: function (rows) {
+                for (var i = 0; i < rows.length; i++) {
+                    if (!parseFloat(rows[i].billAmount)) {
+                        $(this).datagrid("uncheckRow", i);
+                        $(this).datagrid("unselectRow", i);
+                    }
+                }
+            }
+        })
+        $("#installment").datagrid({
+            rownumbers: false,
+            columns: [[
+                {
+                    field: 'cbo',
+                    checkbox: true
+                },
+                {
+                    field: 'loanId',
+                    title: '标的ID',
+                    width: '13%',
+                    align: 'center'
+                },
+                {
+                    field: 'loanCreateTime',
+                    title: '借款时间',
+                    width: '12%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return convertToCNDate(value, "date");
+                    }
+                },
+                {
+                    field: 'repayedBillCnt',
+                    title: '已还笔数',
+                    width: '12%',
+                    align: 'center',
+                },
+                {
+                    field: 'unpayedBillCnt',
+                    title: '待还笔数',
+                    width: '12%',
+                    align: 'center'
+                },
+                {
+                    field: 'nextDueDate',
+                    title: '下一个还款日',
+                    width: '16%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return convertToCNDate(value, "date");
+                    }
+                },
+                {
+                    field: 'billNeedCount',
+                    title: '本次还款笔数',
+                    width: '16%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (!value && value !== 0)return;
+                        var select = ['<select style="width:100px;" name="billNeedCount" id="billNeedCount_' + index + '" rowIndex="' + index + '">'];
+                        var value = parseInt(value); //逾期笔数
+                        var optionCount = 0;//下拉列表的个数
+                        if (value == parseInt(row.unpayedBillCnt) && value != 0) {
+                            optionCount = value;   //如果逾期笔数等于待还笔数 下拉列表不加1
+                        } else {
+                            optionCount = value + 1;   //如果逾期笔数小于待还笔数 下拉列表加1
+                        }
+                        for (var i = 0; i <= optionCount; i++) {
+                            if (i != row.billNeedCountSelected) {
+                                select.push('<option value="' + i + '">' + (i != 0 ? i : "请选择") + '</option>');
+                            } else {
+                                select.push('<option selected="selected" value="' + i + '">' + (i != 0 ? i : "请选择") + '</option>');
+                            }
+                        }
+                        if (value == 0 && row.unpayedBillCnt > 1) {  //如果没有逾期笔数 并且待还笔数大于1 添加提前结清选项
+                            select.push('<option payOff="true" value="' + row.unpayedBillCnt + '" ' + (row.billNeedCountSelected == row.unpayedBillCnt ? "selected=\"selected\"" : "") + '>提前结清</option>');
+                        }
+                        select.push('</select>');
+                        return select.join('');
+                    }
+                },
+                {
+                    field: 'billNeedAmount',
+                    title: '本次应还总额',
+                    width: '16%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return (parseFloat(value) || 0).toFixed(2)
+                    }
+                },
+
+            ]],
+            view: detailview,
+            detailFormatter: function (rowIndex, rowData) {
+                return '<div style="padding: 15px 30px"><div id="installmentDetail_' + rowIndex + '"></div></div>';
+            },
+            onExpandRow: function (index, row) {
+                var selector = $("#installmentDetail_" + index);
+                if (selector.css("dispaly") != 'none') {
+                    for (var i = 0; i < row.instalment.length; i++) {
+                        row.instalment[i].number = i + 1;
+                    }
+                    selector.datagrid({
+                        rownumbers: false,
+                        data: row.instalment,
+                        width: 382,
+                        columns: [[
+                            {
+                                field: 'number',
+                                title: '序号',
+                                width: '40',
+                                align: 'center'
+                            },
+                            {
+                                field: 'installmentKey',
+                                title: '分期key',
+                                hidden: true
+                            },
+                            {
+                                field: 'instalmentDueDate',
+                                title: '还款日',
+                                width: '120',
+                                align: 'center',
+                                formatter: function (value, row, index) {
+                                    return convertToCNDate(value, "date");
+                                }
+                            },
+                            {
+                                field: 'inatalmentAmount',
+                                title: '应还金额',
+                                width: '110',
+                                halign: 'center',
+                                align: 'right',
+                                formatter: function (value, row, index) {
+                                    return (parseFloat(value) || 0).toFixed(2)
+                                }
+                            },
+                            {
+                                field: 'instalmentStatus',
+                                title: '状态',
+                                width: '110',
+                                align: 'center',
+                            },
+                        ]],
+                    });
+                    $(this).datagrid("fixDetailRowHeight", index);
+                }
+                $(this).datagrid("resize");
+            },
+            onLoadSuccess: function (data) {
+                for (var key in data.rows) {
+                    $(this).datagrid("expandRow", key);
+                }
+                $(this).datagrid("resize");
+                bindSelect()
+            },
+            onCollapseRow: function () {
+                bindSelect()
+            },
+            onBeforeSelect: function (index, row) {
+                if ($("#billNeedCount_" + index).val() == "0") {
+                    return false;
+                }
+            },
+            onCheck: function (index, row) {
+                if ($("#billNeedCount_" + index).val() == "0") {
+                    $(this).datagrid("uncheckRow", index);
+                    $(this).datagrid("unselectRow", index);
+                }
+            },
+            onCheckAll: function (rows) {
+                for (var i = 0; i < rows.length; i++) {
+                    if ($("#billNeedCount_" + i).val() == "0") {
+                        $(this).datagrid("uncheckRow", i);
+                        $(this).datagrid("unselectRow", i);
+                    }
+                }
+            }
+        })
+
+        var CalcRequest = false;//是否请求中
+        function bindSelect() {  //绑定现金分期中的Select
+            var dg = $("#installment");
+            dg.datagrid("getPanel").find("select").unbind("click,change").bind("click", function () {
+                return false;
+            }).bind("change", function () {
+                if (CalcRequest) {
+                    return;
+                }
+                CalcRequest = true;
+                var rowIndex = $(this).attr("rowIndex");
+                var val = parseInt($(this).val()) || 0;
+                var row = dg.datagrid("getRows")[rowIndex];
+                var isPayOff = $(this).find('option:selected').attr("payoff") == "true" ? 1 : 0;
+                $.modalWait('open', {"msg": "计算中,请稍后..."});
+                common.ajax({
+                    url: "/commitChargeRepayment/instalmentCalc",
+                    type: "post",
+                    data: {
+                        "loanId": row.loanId,
+                        "repaymentPeriods": val,
+                        "isPayOff": isPayOff
+                    },
+                    complete: function (xhr) {
+                        CalcRequest = false;
+                        $.modalWait('close');
+                        var res = JSON.parse(xhr.responseText);
+                        if (res.data.loanBill) {
+                            row = res.data.loanBill;
+                            row.billNeedCountSelected = val;
+                        }
+                        if (!row.instalment) {
+                            row.instalment = [];
+                        }
+                        dg.datagrid('updateRow', {
+                            index: rowIndex,
+                            row: row
+                        }).datagrid("refreshRow", rowIndex).datagrid("collapseRow", rowIndex).datagrid("expandRow", rowIndex);
+                        $("#installmentDetail_" + rowIndex).datagrid("loadData", row.instalment);
+                        if (row.billNeedCountSelected == 0) {
+                            dg.datagrid("uncheckRow", rowIndex);
+                        }
+                    }
+                })
+            })
+        }
+
+        function loadData(data) {
+            for (var i = 0; i < data.bills.length; i++) {
+                data.bills[i].number = i + 1;
+            }
+            for (var i = 0; i < data.loanBills.length; i++) {
+                data.loanBills[i].billNeedCount = 0;//本次还款笔数中的逾期笔数  //本次还款笔数
+                for (var j = 0; j < data.loanBills[i].instalment.length; j++) {
+                    if (data.loanBills[i].instalment[j].instalmentStatusCode === "OVER_DUE") {
+                        data.loanBills[i].billNeedCount += 1;
+                    }
+                }
+                data.loanBills[i].billNeedCountSelected = data.loanBills[i].billNeedCount;//下拉列表选中项的值
+
+                if (!data.loanBills[i].unpayedBillCnt) {
+                    data.loanBills[i].unpayedBillCnt = data.loanBills[i].instalment.length;
+                }
+            }
+            $("#billLog").datagrid('loadData', data.bills);
+            $("#installment").datagrid('loadData', data.loanBills);
+        }
+
+        var userId = '';
+
+        //查询按钮
+        $("#btnSearch").click(function () {
+            userId = '';
+            var val = $.trim($("#searchValue").val());
+            if (!val) {
+                return $.messager.alert("提示", "请输入查询条件!");
+            }
+            $("#money").html("0.00");
+            $("#count").html("0");
+            $("#overMoney").html("0.00");
+            $.modalWait("open", {msg: "查询用户中"});
+            common.ajax({
+                url: "/chargeRepayment/searchUser",
+                type: "post",
+                data: {
+                    "key": $("#searchType").combobox('getValue'),
+                    "value": val
+                },
+                succ: function (res) {
+                    if (res.data.rows.length == 1) {
+                        userId = res.data.rows[0].userId;
+                        $.modalWait("open", {msg: "加载账单记录和现金分期中"});
+                        common.ajax({
+                            url: "/commitChargeRepayment/billSearch",
+                            type: "post",
+                            data: {
+                                "userId": userId
+                            },
+                            succ: function (res) {
+                                if (res.data.bills.length == 0 && res.data.loanBills.length == 0) {
+                                    return $.messager.alert("提示", "用户无待还款项信息!");
+                                }
+                                $("#count").html(res.data.overdueCnt);
+                                $("#overMoney").html(parseFloat(res.data.overdueAmount).toFixed(2));
+                                loadData(res.data);
+                            },
+                            complete: function () {
+                                $.modalWait("close");
+                            }
+                        })
+                    }
+                    else {
+                        $.modalWait("close");
+                        $.messager.alert("提示", "查询无此人，请重新输入查询条件!");
+                        loadData({bills: [], loanBills: []});
+                    }
+                },
+                complete: function (xhr) {
+                    var obj = JSON.parse(xhr.responseText);
+                    if (obj.status != 0 || obj.message != '') {
+                        $.modalWait("close");
+                    }
+                }
+            })
+        })
+
+        //计算按钮
+        $("#btnCompute").click(function () {
+            if (!userId) {
+                return $.messager.alert("提示", "请先选择用户!");
+            }
+            var rows = $("#billLog").datagrid('getChecked');
+            var repayBillsArray = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].billTypeCode) {
+                    repayBillsArray.push(rows[i].billTypeCode);
+                }
+            }
+            var repayLoanBillsObj = [];
+            var reapyLoanBillsRows = $("#installment").datagrid('getChecked');
+            for (var i = 0; i < reapyLoanBillsRows.length; i++) {
+                var index = $("#installment").datagrid('getRowIndex', reapyLoanBillsRows[i]);
+                var sel = $("#billNeedCount_" + index);
+                if (sel.val() == "0") { //如果选择0期 跳过
+                    continue;
+                }
+                repayLoanBillsObj.push({
+                    "loanId": reapyLoanBillsRows[i].loanId,
+                    "phaseNumber": sel.val(),
+                    "isPayOff": $("#billNeedCount_" + index).find('option:selected').attr("payoff") == "true"
+                });
+            }
+            if (repayLoanBillsObj.length == 0 && repayBillsArray.length == 0) {
+                return $.messager.alert("提示", "尚未选择还款账单或借款分期，请选择!");
+            }
+            $.modalWait('open', {"msg": "计算中..."});
+            common.ajax({
+                url: "/commitChargeRepayment/tryCalc",
+                type: "post",
+                data: {
+                    "userId": userId,
+                    "repayBills": repayBillsArray.join(","),
+                    "reapyLoanBills": JSON.stringify(repayLoanBillsObj)
+                },
+                succ: function (res) {
+                    if (res.message == '') {
+                        $("#money").html(parseFloat(res.data.totolBillAmount).toFixed(2));
+                    }
+                    else {
+                        //$.messager.alert("提示", "还款计算失败,请重试!");
+                        $.messager.alert("提示", res.message);
+                    }
+                },
+                complete: function () {
+                    $.modalWait('close');
+                }
+            })
+        })
+
+        //重置按钮
+        $("#btnReset").click(function () {
+            $("#searchType").combobox('reset');
+            $("#searchValue").val('')
+        })
+    })
+
+    $(function () {
+        if (!common.hasCode("charge_repayment_try_calc")) {//计算按钮的权限
+            $("#btnCompute").remove();
+        }
+    })
+
+</script>
+</html>

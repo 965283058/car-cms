@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/default/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/animate.css">
+
+
+
+    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../static/js/common.js"></script>
+
+    <script type="text/javascript" src="../static/jsrsa/publicKeyStr.js"></script>
+    <script type="text/javascript" src="../static/jsrsa/RSAencript.js"></script>
+    <title>登录</title>
+</head>
+<body>
+
+<div class="article">
+    <div class="content  testPosition">
+        <p class="h3  loginTitle">黑卡后台管理系统</p>
+
+        <p class="form-group  usernamePar"><input type="text" style="border-radius: 0; border:0;"
+                                                  class="form-control  loginInput"
+                                                  placeholder="请输入用户名" id="username"/>
+            <!--<p class="usernameError publicErrorStyle" id="loginStyle">用户名不能为空</p>	-->
+        </p>
+
+        <p class="form-group passwordPar"><input type="password" style="border-radius: 0; border:0;"
+                                                 class="form-control  loginInput" placeholder="请输入密码" 
+                                                 id="password">
+            <!--<p class="passwordError  publicErrorStyle" id="loginStyle">密码不能为空</p>-->
+        </p>
+
+        <p class="errorStyle"></p>
+
+        <p class="form-group">
+            <button type="button" style="border-radius: 0; border:0;" class="form-control loginInput loginButton"
+                    id="loginCheck">登录
+            </button>
+
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    $(function () {
+
+        window.location.href = "admin.html";
+        return
+        localStorage.clear();
+        check();
+    });
+
+
+    function login() {
+        common.ajax({
+            url: '/login/login',
+            type: "post",
+            data: {
+                "username": $("#username").val(),
+                "password": RSAencript($("#password").val())
+            },
+            succ: function (res) {
+                localStorage.userData = JSON.stringify(res.data);
+                //用来显示admin页面超级管理员的名称；
+                localStorage.adminerName = res.data.realName;
+                // 用来判断 修改密码页面 是否显示“首页修改密码”
+                localStorage.password = res.data.passwordNeedReset;
+
+                if (res.data.passwordNeedReset) {
+                    window.location.href = "resetPassword.html";
+                } else {
+                    window.location.href = "admin.html";
+                }
+            },
+            fail: function (res) {
+                $(".errorStyle").css("display", "block").html(res.message).addClass("animated  shake");
+            }
+        });
+    }
+
+
+    function check() {
+
+        $("input").on('mousedown keydown', function () {
+            $(".errorStyle").css("display", "none");
+        })
+
+
+        $("#loginCheck").click(function () {
+            checkPassword();
+
+        })
+
+        document.onkeydown = function (event) {
+            var event = event || window.event;
+            if (event.keyCode == 13) {
+                checkPassword();
+            }
+        }
+    }
+
+    function checkPassword() {
+
+        if ($("#username").val() !== "" && $("#password").val() !== "") {
+            login();
+        } else {
+            for (var i = 0, len = $("input").length; i < len; i++) {
+                if ($("input").eq(i).val() == "") {
+                    $(".errorStyle").html("用户名和密码不能为空").css("display", "block").addClass("animated  shake");
+                }
+
+
+            }
+        }
+    }
+
+
+</script>

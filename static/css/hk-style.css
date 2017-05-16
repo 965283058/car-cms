@@ -1,0 +1,572 @@
+html, body {
+    font-family:"宋体 Regular", "宋体";
+    padding: 0px;
+    margin: 0px;
+}
+
+/*�ı�������ʽ*/
+.text-overflow {
+    display: block; /*�����������*/
+    word-break: keep-all; /* ������ */
+    white-space: nowrap; /* ������ */
+    overflow: hidden; /* ���ݳ������ʱ���س������ֵ����� */
+    text-overflow: ellipsis; /* ���������ı����ʱ��ʾʡ�Ա��(...) ������overflow:hidden;һ��ʹ�á�*/
+}
+
+/* ��֤ʱ��ɫ */
+.validate {
+    transition: border-color 2s;
+    -moz-transition: border-color 2s; /* Firefox 4 */
+    -webkit-transition: border-color 2s; /* Safari and Chrome */
+    -o-transition: border-color 2s; /* Opera */
+}
+
+/* ��ѯ���������ʽ*/
+.searchBox {
+    height: 45px;
+    padding-top: 6px;
+    line-height: 22px;
+}
+
+.searchBox div {
+    display: inline-block;
+    float: left;
+    margin: 6px 0 0 13px;
+}
+
+.searchVal {
+    width: 240px;
+    padding: 3px;
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid #ccc;
+    font-size: 12px;
+}
+
+/*-----------datagrid����������ʽ------------*/
+.dgToolbar {
+    background-color: #EAEAEA;
+    height: 30px;
+    border-top: 1px solid #D4D4D4;
+    border-bottom: 0;
+    padding: 4px 10px;
+    width: 100%;
+}
+
+/*���ּ�ǿ*/
+.stress {
+    font-weight: 400;
+    color: red;
+    font-size: 12px;
+    line-height: 25px;
+}
+
+/*�������*/
+.clear {
+    *zoom: 1;
+}
+
+.clear:after {
+    display: block;
+    content: "clear";
+    height: 0;
+    clear: both;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+/*���õ��ı���*/
+.disabledText {
+    width: 100%;
+    background: #EFEFEF;;
+    border-style: ridge;
+}
+
+.hk-left {
+    float: left;
+}
+
+.hk-right {
+    float: right;
+}
+
+.hk-center {
+    text-align: center;
+}
+
+.mg-l-5 {
+    margin-left: 5px !important;
+}
+
+.mg-l-10 {
+    margin-left: 10px !important;
+}
+
+.mg-l-15 {
+    margin-left: 15px !important;
+}
+
+.mg-l-20 {
+    margin-left: 20px !important;
+}
+
+.mg-l-30 {
+    margin-left: 30px !important;
+}
+
+.mg-r-5 {
+    margin-right: 5px !important;
+}
+
+.mg-r-10 {
+    margin-right: 10px !important;
+}
+
+.mg-r-15 {
+    margin-right: 15px !important;
+}
+
+.mg-r-20 {
+    margin-right: 20px !important;
+}
+
+.mg-r-30 {
+    margin-right: 30px !important;
+}
+
+.padding-0 {
+    padding: 0px !important;
+}
+
+.text-center {
+    display: block;
+    text-align: center;
+}
+
+.text-right {
+    display: block;
+    text-align: right;
+}
+
+.text-left {
+    display: block;
+    text-align: left;
+}
+
+.leftBox {
+    width: 30%;
+}
+
+.rightBox {
+    width: 60%;
+    margin-left: 5%;
+}
+
+.w-3 {
+    width: 25%
+}
+
+.w-4 {
+    width: 33.33%
+}
+
+.w-6 {
+    width: 50%;
+}
+
+.w-7 {
+    width: 58.33%;
+}
+
+.w-8 {
+    width: 66.66%;
+}
+
+.w-9 {
+    width: 75%;
+}
+
+.w-12 {
+    width: 100%;
+}
+
+/*ҳ������*/
+.container {
+    background: #FAFAFA;
+    padding-top: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+    height: 100%;
+    max-width: calc(100% - 10px);
+    overflow: scroll;
+    font-family:"宋体 Regular", "宋体";
+}
+
+
+.container label {
+    font-size: 12px;
+    font-weight: lighter;
+    text-rendering: optimizelegibility;
+    font-feature-settings: "kern";
+    font-kerning: normal;
+}
+
+.container input[type=text],
+.container input[type=number],
+.container select {
+    height: 22px;
+    padding: 0px;
+    line-height: 20px;
+}
+
+.container input[type=text],
+.container input[type=number] {
+    border-radius: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-style: ridge;
+}
+
+.caption {
+    font-size: 12px;
+    /*font-weight: bold;*/
+    text-rendering: optimizelegibility;
+    font-feature-settings: "kern";
+    font-kerning: normal;
+    /*color: #666;*/
+}
+
+.field {
+    border: 1px solid #c0c0c0;
+    position: relative;
+    padding: 25px 30px 25px 30px;
+    height: auto;
+    max-width: 1400px;
+    margin-bottom: 40px;
+}
+
+.field .legend {
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    z-index: 20;
+    font-size: 12px;
+    font-weight: bold;
+    background: #FAFAFA;
+    opacity: 1;
+    padding: 0px 3px;
+}
+
+.imageBox {
+    text-align: center;
+    height: 200px;
+}
+
+.imageBox img {
+    width: calc(100% - 24px);
+    height: 176px;
+    border: 12px solid #CCCCCC;
+}
+
+.userInfo {
+    height: 200px;
+    border: 1px solid #c0c0c0;
+}
+
+.userInfo .caption {
+    margin-right: 30px;
+}
+
+.userInfo ul {
+    margin: 30px 20px;
+}
+
+.userInfo li {
+    margin-top: 15px;
+    list-style: none;
+    padding-right: 4px;
+    height: 30px;
+}
+
+.userInfo input[type=text] {
+    width: 240px;
+}
+
+.taskTable {
+    width: 100%;
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+}
+
+.taskTable th,
+.taskTable td {
+    border: 1px solid #c0c0c0;
+    line-height: 27px;
+}
+
+.taskTable th {
+    font-size: 14px;
+}
+
+.taskTable td {
+    font-size: 13px;
+    padding-left: 8px;
+}
+
+.taskTable thead th {
+    background: #E4E4E4;
+}
+
+.taskTable .hk-btn {
+    margin-top: 3px;
+}
+
+.taskTable .groupTitle {
+    font-weight: 700;
+    font-style: normal;
+    font-size: 13px;
+    color: #585858;
+    padding-left: 25px;
+    background: #F8F8F8 !important;
+}
+
+.taskTable .groupTitle .groupName {
+    display: inline-block;
+    width: 300px;
+}
+
+.taskTable .caption {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.taskTable input[type=text],
+.taskTable select,
+.taskTable .textbox {
+    border: 0;
+    background: transparent;
+}
+
+.taskTable input[type=text] {
+    height: 100%;
+    width: 98%;;
+}
+
+.taskTable select {
+    height: calc(100% - 1px);
+    width: 100%;
+}
+
+.taskTable .textbox,
+.taskTable .textbox-icon.combo-arrow {
+    height: 27px !important;
+    border: 0;
+}
+
+.titleBox {
+    line-height: 30px;
+    background: #E4E4E4;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    text-align: left;
+    padding: 0px 5px;
+}
+
+/*�����Ĳ���*/
+.inputBox dl {
+    float: left;
+    position: relative;
+    margin: 0;
+    padding: 5px 0px;
+    overflow: hidden;
+    height: 36px;
+}
+
+.inputBox dl dd,
+.inputBox dl dt {
+    font-size: 12px;
+}
+
+.inputBox dl dt {
+    width: 70px;
+    height: 25px;
+    line-height: 25px;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.inputBox dl dd {
+    position: absolute;
+    width: calc(100% - 80px);
+    left: 80px;
+    top: 5px;
+    margin-left: 0; /*���IE������*/
+    padding-left: 0; /*�����IE������*/
+}
+
+.inputBox dl dd input {
+    width: calc(100% - 10px);
+}
+
+.radioLabel {
+    display: inline-block;
+    height: 25px;
+    line-height: 25px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.radioLabel input[type=radio] {
+    position: absolute;
+    top: 4px;
+    left: 0px;
+    width: 25px;
+}
+
+/*������ˮ*/
+.userVerifyLog {
+    width: 100%;
+    border: 1px solid #c0c0c0;
+}
+
+.userVerifyLog th {
+    color: #666;
+    background: #f5f5f5 !important;
+}
+
+.userVerifyLog tbody {
+    background: #FFFFFF;
+}
+
+.userVerifyLog th,
+.userVerifyLog td {
+    height: 25px !important;
+    text-align: center;
+}
+
+.userVerifyLog td:nth-child(1) {
+    width: 12%;
+}
+
+.userVerifyLog td:nth-child(2) {
+    width: 24%;
+}
+
+.userVerifyLog td:nth-child(3) {
+    width: 24%;
+}
+
+.userVerifyLog td:nth-child(4) {
+    width: 20%;
+}
+
+.userVerifyLog td:nth-child(5) {
+    width: 20%;
+}
+
+.userVerifyLog .user-group {
+    text-align: left;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.userVerifyLog .advice {
+    text-align: left;
+    padding-left: 20px;
+    height: 40px;
+}
+
+/*������*/
+.dialogViewInfo {
+    margin: 15px 5px;
+}
+
+.dialogViewInfo table {
+    width: 100%;
+}
+
+.dialogViewInfo table tr {
+    height: 35px;;
+}
+
+.dialogViewInfo table td:nth-child(odd) {
+    text-align: right;
+    width: 75px;
+}
+
+.dialogViewInfo input[type=text],
+.dialogViewInfo select,
+.dialogViewInfo textarea {
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0px 2px;
+    border-style: ridge;
+    border-radius: 3px;
+    width: calc(100% - 20px);
+    font-family:"宋体 Regular", "宋体";
+}
+
+.dialogViewInfo input[type=text],
+.dialogViewInfo .textbox,
+.dialogViewInfo .textbox-icon.combo-arrow {
+    height: 24px !important;
+}
+
+.dialogViewInfo select {
+    height: 28px;
+    width: calc(100% - 12px)
+}
+
+.dialogViewInfo textarea {
+    width: calc(100% - 18px);
+    height: 40px;
+}
+
+.dialogViewInfo textarea[readonly],
+.dialogViewInfo input[type=text][readonly=''] {
+    background: rgb(229, 229, 229);
+}
+
+/*�ϴ�ͼƬ���*/
+.uploadContainer {
+    /*background: #c5c6c7;*/
+    /*border: 1px solid #cccccc;*/
+    margin: 10px 10px 10px 10px;
+    padding: 10px;
+}
+
+.uploadContainer table {
+    width: 100%;
+}
+
+.uploadContainer table td {
+    height: 50px;
+}
+
+.uploadContainer table td:first-child {
+    width: 60px;
+    text-align: right;
+    padding-right: 10px;
+}
+
+/*ȥ��$.messager.alert���Ͻǵġ���ť*/
+.panel.window.messager-window .panel-tool {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

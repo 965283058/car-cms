@@ -1,0 +1,218 @@
+
+.btn-bs {
+    display: inline-block;
+    margin: -3px auto 0 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px
+}
+
+.btn-footer {
+    text-align: center;
+}
+
+.btn-footer a {
+    margin: 0px 20px;
+}
+
+.l-btn {
+    height: 22px;
+}
+
+.l-btn span {
+    margin-right: 0px;
+}
+
+.l-btn .l-btn-text {
+    line-height: 20px;
+}
+
+/*---------------自定义按钮----------------*/
+.hk-btn {
+    padding: 2px 4px 2px 22px;
+    height: 21px;
+    line-height: 15px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: 4px;
+}
+
+.hk-btn:hover {
+    border-color: #bdbdbd;
+    background-color: #f6f2ee;
+}
+
+.hk-btn.refresh {
+    background: url('../image/refresh.png') no-repeat 2px 2px;
+}
+
+.hk-btn.task {
+    background: url('../image/approvalTask.png') no-repeat 3px 2px;
+}
+
+.hk-btn.see {
+    background: url('../image/preview.png') no-repeat 3px 2px;
+}
+
+.hk-btn.search {
+    background: url('../image/search.png') no-repeat 3px 2px;
+}
+
+.hk-btn.reset {
+    background: url('../image/reset.png') no-repeat 3px 2px;
+}
+
+.hk-btn.audit {
+    background: url('../image/audit.png') no-repeat 3px 2px;
+}
+
+.hk-btn.cancel {
+    background: url('../image/cancel.png') no-repeat 3px 2px;
+}
+.hk-btn.compute {
+    background: url('../image/compute.png') no-repeat 3px 2px;
+}
+
+/*---------------自定义图标----------------*/
+
+.user-icon {
+    background-position: center left;
+    padding-left: 20px;
+    display: inline-block;
+    line-height: 25px;
+    vertical-align: middle;
+}
+
+.icon-user-see {
+    background: url('../image/see.png') no-repeat center center;
+    padding-left: 20px;
+    height: 23px;
+    line-height: 25px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.icon-user-edit {
+    background: url('../image/edit.gif') no-repeat center center;
+    padding-left: 20px;
+    height: 23px;
+    line-height: 25px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.icon-user-preview {
+    background: url('../image/preview.png') no-repeat center center;
+    padding-left: 20px;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.icon-user-close {
+    background-size: 16px 16px;
+    background: url('../image/close.png') no-repeat center left;
+    padding: 1px 1px 1px 20px;
+    height: 23px;
+    line-height: 25px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+    border: 0;
+}
+
+.icon-user-open {
+    background-size: 16px 16px;
+    background: url('../image/open.png') no-repeat center left;
+    padding: 1px 1px 1px 20px;
+    height: 23px;
+    line-height: 25px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+    border: 0;
+}
+
+.icon-user-download {
+    background-size: 20px 20px;
+    background: url('../image/download.gif') no-repeat center left;
+    padding: 1px 1px 1px 20px;
+    height: 23px;
+    line-height: 25px;
+    display: block;
+    margin: 0px;
+    cursor: pointer;
+    border: 0;
+}
+
+.icon-user-upload {
+    background: url('../image/upload.gif') no-repeat center left;
+}
+
+.icon-user-ok {
+    background: url('../image/ok.png') no-repeat center left;
+}
+
+.icon-user-no {
+    background: url('../image/no.png') no-repeat center left;
+
+}
+
+.icon-user-unsure {
+    background: url('../image/unsure.png') no-repeat center left;
+    background-size: 16px;
+
+}
+
+/*----------扩展EasyUI图标-----------*/
+.icon-submit {
+    background: url('../image/submit.png') no-repeat center center;
+}
+
+.icon-refresh {
+    background: url('../image/refresh.png') no-repeat center center;
+}
+
+.icon-see {
+    background: url('../image/preview.png') no-repeat center center;
+}
+
+/*更正EasyUI DataGrid 展开关闭按钮*/
+.datagrid-row-collapse {
+    background: url("../image/close.png") no-repeat 0px center;
+}
+
+.datagrid-row-expand {
+    background: url("../image/open.png") no-repeat 0px center;
+}
+
+

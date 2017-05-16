@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/default/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/icon.css">
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/userIcon.css">
+
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../static/js/common.js"></script>
+    <script type="text/javascript" src="../../static/js/extend.js"></script>
+    <script type="text/javascript" src="../../static/js/validate.js"></script>
+
+
+</head>
+<body>
+<div id="container" class="container">
+    <div class="searchBox">
+        <form id="searchForm">
+            <div class="inputWrap">
+                <label>登录名：<input type="text" name="loginName"></label>
+            </div>
+            <div class="inputWrap">
+                <label>城市：<input type="text" name="city"></label>
+            </div>
+            <div class="inputWrap">
+                <label>电话：<input type="text" name="tel"></label>
+            </div>
+            <div class="inputWrap">
+                <label>公司名称：<input type="text" name="company"></label>
+            </div>
+            <div class="inputWrap">
+                <label>个人名称：<input type="text" name="name"></label>
+            </div>
+        </form>
+        <div class="btnWrap">
+            <button class="hk-btn search" id="btnSearch">查询
+            </button>
+            <button class="hk-btn reset" id="btnReset">重置
+            </button>
+        </div>
+
+    </div>
+    <div class="searchResult">
+        <div class="dgWarp">
+            <div class="dgBox">
+                <div id="billLog"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="user" style="display: none">
+        <form name="userForm">
+            <table class="cells">
+                <tr>
+                    <td class="title">登录名：</td>
+                    <td class="content"><input type="text" name="loginName"></td>
+                </tr>
+                <tr>
+                    <td class="title">密码：</td>
+                    <td class="content"><input type="text" name="password"></td>
+                </tr>
+                <tr>
+                    <td class="title">确认密码：</td>
+                    <td class="content"><input type="text" name="pwdConfirm"></td>
+                </tr>
+                <tr>
+                    <td class="title">试用天数：</td>
+                    <td class="content"><input type="text" name="trialDays"></td>
+                </tr>
+                <tr>
+                    <td class="title">公司名称：</td>
+                    <td class="content"><input type="text" name="company"></td>
+                </tr>
+                <tr>
+                    <td class="title">公司地址：</td>
+                    <td class="content"><input type="text" name="address"></td>
+                </tr>
+                <tr>
+                    <td class="title">个人姓名：</td>
+                    <td class="content"><input type="text" name="name"></td>
+                </tr>
+                <tr>
+                    <td class="title">个人身份证号：</td>
+                    <td class="content"><input type="text" name="idNo"></td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+
+    <div id="renew" style="display: none">
+        <form name="renewForm">
+            <table class="cells">
+                <tr>
+                    <td class="title">续费时间：</td>
+                    <td class="content"><input type="text" name="num"></td>
+                </tr>
+                <tr>
+                    <td class="title">时间单位：</td>
+                    <td class="content">
+                        <label><input type="radio" name="timeType" value="MOUNTH" checked>&nbsp;月</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label><input type="radio" name="timeType" value="YEAR">&nbsp;年</label>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+    <div id="updatePwd" style="display: none">
+        <form name="updatePwdForm">
+            <table class="cells">
+                <tr>
+                    <td class="title">密码：</td>
+                    <td class="content"><input type="text" name="password"></td>
+                </tr>
+                <tr>
+                    <td class="title">确认密码：</td>
+                    <td class="content"><input type="text" name="pwdConfirm"></td>
+                </tr>
+
+
+            </table>
+        </form>
+    </div>
+
+</div>
+</div>
+
+</body>
+<script>
+    $(function () {
+        function list() {
+            var params = $("#searchForm").serializeJson()
+            $("#billLog").datagrid({
+                title: "用户列表",
+                url: '/user/list',
+//                queryParams: params,
+                rownumbers: false,
+                singleSelect: true,
+                columns: [[
+                    {
+                        field: 'cbo',
+                        checkbox: true
+                    },
+                    {
+                        field: 'number',
+                        title: '序号',
+                        width: '3%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'loginName',
+                        title: '登录名',
+                        width: '150',
+                        align: 'center'
+                    },
+                    {
+                        field: 'userType',
+                        title: '用户类型',
+                        width: '80',
+                        align: 'center'
+                    },
+                    {
+                        field: 'memberType',
+                        title: '会员类型',
+                        width: '80',
+                        align: 'center'
+                    },
+                    {
+                        field: 'createTime',
+                        title: '开户时间',
+                        width: '135',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return $.converToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'serviceDate',
+                        title: '服务期限',
+                        width: '135',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return $.converToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'company',
+                        title: '公司名称',
+                        align: 'center',
+                        width: '200',
+                    },
+
+
+                    {
+                        field: 'address',
+                        title: '公司地址',
+                        width: '200',
+                        align: 'center'
+                    },
+                    {
+                        field: 'name',
+                        title: '个人名称',
+                        width: '100',
+                        align: 'center'
+                    },
+                    {
+                        field: 'idNo',
+                        title: '个人身份证号码',
+                        width: '150',
+                        align: 'center'
+                    },
+                    {
+                        field: 'billAmount',
+                        title: '客户端版本号',
+                        width: '80',
+                        align: 'center'
+                    },
+
+                ]],
+                toolbar: [{
+                    iconCls: 'icon-add',
+                    text: "开户",
+                    handler: addUser
+                }, '-', {
+                    iconCls: 'icon-sum',
+                    text: "续费",
+                    handler: renew
+                }, '-', {
+                    iconCls: 'icon-clear',
+                    text: "清理机器码",
+                    handler: resetMacCode
+                }, '-', {
+                    iconCls: 'icon-edit',
+                    text: "修改密码",
+                    handler: updatePwd
+                }, '-', {
+                    iconCls: 'icon-undo',
+                    text: " 踢出",
+                    handler: kickOut
+                }, '-', {
+                    iconCls: 'icon-lock',
+                    text: " 锁定",
+                    handler: lock
+                }],
+                onLoadSuccess: function (data) {
+                }
+            })
+        }
+
+        list()
+
+        $("#btnSearch").click(list);
+
+        //重置按钮
+        $("#btnReset").click(function () {
+            $("#searchForm").form('reset');
+        })
+
+        function addUser() {
+            $.createOnlyDiv('user-dialog');
+            $("#user-dialog").dialog({
+                title: '【开户】',
+                width: 400,
+                height: 400,
+                closed: false,
+                cache: false,
+                modal: true,
+                content: $("#user").html(),
+                buttons: [{
+                    text: '提交处理',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var userForm = $("#user-dialog").find("form[name=userForm]");
+                        if (userForm.form("validate")) {
+                            var data = userForm.serializeJson();
+                            common.ajax({
+                                url: '/user/add',
+                                type: "post",
+                                data: data,
+                                succ: function (res) {
+                                    $("#user-dialog").dialog("destroy");
+                                    $.messager.alert('提示', '开户成功');
+                                    list()
+                                }
+                            });
+                        }
+
+
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        $("#user-dialog").dialog('destroy');
+                    }
+                }]
+            })
+            $("#user-dialog").find("input[name=loginName]").validatebox({
+                required: true,
+                validateOnCreate: false
+            });
+            $("#user-dialog").find("input[name=password]").passwordbox({
+                showEye: true,
+                required: true,
+                validateOnCreate: false,
+                validType: 'pwd'
+            });
+            $("#user-dialog").find("input[name=pwdConfirm]").passwordbox({
+                showEye: true,
+                required: true,
+                validateOnCreate: false,
+                validType: "equlse['input[name=password].textbox-value']"
+
+            });
+            $("#user-dialog").find("input[name=trialDays]").numberbox({
+                required: true,
+                min: 0,
+                validateOnCreate: false,
+            });
+            $("#user-dialog").find("input[name=company]").validatebox({
+                required: true,
+                validateOnCreate: false
+            });
+            $("#user-dialog").find("input[name=name]").validatebox({});
+            $("#user-dialog").find("input[name=idNo]").validatebox({
+                validType: 'idcard'
+            });
+
+        }
+
+        function renew() {
+            var rows = $("#billLog").datagrid("getChecked")
+            if (!rows.length) {
+                $.messager.alert("提示", "请先选中一行!", 'info')
+                return
+            }
+
+
+            $.createOnlyDiv('renew-dialog');
+            $("#renew-dialog").dialog({
+                title: '【续费】',
+                width: 400,
+                height: 160,
+                closed: false,
+                cache: false,
+                modal: true,
+                content: $("#renew").html(),
+                buttons: [{
+                    text: '提交处理',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var numberbox = $("#renew-dialog").find("input[numberboxname=num]")
+                        if (numberbox.numberbox("isValid")) {
+                           $.messager.confirm("提示","您确定给该用户续费吗？",function (result) {
+                               if(result){
+                                   var num = numberbox.numberbox("getValue");
+                                   var timeType = $("#renew-dialog").find("input[type=radio]:checked").val();
+                                   var data = {useId: rows[0].id, "num": num, "timeType": timeType}
+                                   common.ajax({
+                                       url: '/user/renew',
+                                       type: "post",
+                                       data: data,
+                                       succ: function (res) {
+                                           $("#user-dialog").dialog("destroy");
+                                           $.messager.alert('提示', '续费成功');
+                                           list()
+                                       }
+                                   });
+                               }
+                           })
+                        } else {
+                            numberbox.numberbox("focus").next("span").find('input[type=text]').focus()
+                        }
+
+
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        $("#renew-dialog").dialog('destroy');
+                    }
+                }]
+            })
+            $("#renew-dialog").find("input[name=num]").numberbox({
+                required: true,
+                min: 0,
+                validateOnCreate: false,
+            });
+        }
+
+        function resetMacCode() {
+            var rows = $("#billLog").datagrid("getChecked")
+            if (!rows.length) {
+                $.messager.alert("提示", "请先选中一行!", 'info')
+                return
+            }
+            $.messager.confirm("提示","您确定清理该用户的机器码吗？",function (result) {
+                if(result){
+                    common.ajax({
+                        url: '/user/resetMacCode',
+                        type: "post",
+                        data: {useId: rows[0].id},
+                        succ: function (res) {
+                            $("#user-dialog").dialog("destroy");
+                            $.messager.alert('提示', '清理成功');
+                            list()
+                        }
+                    });
+                }
+            })
+        }
+
+        function updatePwd() {
+            var rows = $("#billLog").datagrid("getChecked")
+            if (!rows.length) {
+                $.messager.alert("提示", "请先选中一行!", 'info')
+                return
+            }
+
+            $.createOnlyDiv('updatePwd-dialog');
+            $("#updatePwd-dialog").dialog({
+                title: '【修改密码】',
+                width: 400,
+                height: 170,
+                closed: false,
+                cache: false,
+                modal: true,
+                content: $("#updatePwd").html(),
+                buttons: [{
+                    text: '提交处理',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var updatePwdForm = $("#updatePwd-dialog").find("form[name=updatePwdForm]");
+                        if (updatePwdForm.form("validate")) {
+                            var data = updatePwdForm.serializeJson();
+                            common.ajax({
+                                url: '/user/updatePwd',
+                                type: "post",
+                                data: {userId:rows[0].id,password:data.password},
+                                succ: function (res) {
+                                    $("#updatePwd-dialog").dialog("destroy");
+                                    $.messager.alert('提示', '修改密码成功');
+                                    // list()
+                                }
+                            });
+                        }
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        $("#updatePwd-dialog").dialog('destroy');
+                    }
+                }]
+            })
+            $("#updatePwd-dialog").find("input[name=password]").passwordbox({
+                showEye: true,
+                required: true,
+                validateOnCreate: false,
+                validType: 'pwd'
+            });
+            $("#updatePwd-dialog").find("input[name=pwdConfirm]").passwordbox({
+                showEye: true,
+                required: true,
+                validateOnCreate: false,
+                validType: "equlse['input[name=password].textbox-value']"
+
+            });
+
+        }
+
+        function kickOut() {
+            var rows = $("#billLog").datagrid("getChecked")
+            if (!rows.length) {
+                $.messager.alert("提示", "请先选中一行!", 'info')
+                return
+            }
+            $.messager.confirm("提示","您确定踢出该用户吗？",function (result) {
+                if(result){
+                    common.ajax({
+                        url: '/user/kickOut',
+                        type: "post",
+                        data: {useId: rows[0].id},
+                        succ: function (res) {
+                            $("#user-dialog").dialog("destroy");
+                            $.messager.alert('提示', '踢出成功');
+                            list()
+                        }
+                    });
+                }
+            })
+        }
+
+        function lock() {
+            var rows = $("#billLog").datagrid("getChecked")
+            if (!rows.length) {
+                $.messager.alert("提示", "请先选中一行!", 'info')
+                return
+            }
+            $.messager.confirm("提示","您确定锁定该用户吗？",function (result) {
+                if(result){
+                    common.ajax({
+                        url: '/user/lock',
+                        type: "post",
+                        data: {useId: rows[0].id},
+                        succ: function (res) {
+                            $("#user-dialog").dialog("destroy");
+                            $.messager.alert('提示', '锁定成功');
+                            list()
+                        }
+                    });
+                }
+            })
+        }
+    })
+</script>
+</html>

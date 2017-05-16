@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>充值审核</title>
+    <link rel="stylesheet" type="text/css" href="../../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../../themes/icon.css">
+    <script type="text/javascript" src="../js/juicer-min.js"></script>
+    <script type="text/javascript" src="../js/extend.js"></script>
+    <script type="text/javascript" src="../js/datagrid-detailview.js"></script>
+    <script type="text/javascript" src="../js/repayCommon.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/userIcon.css">
+    <link rel="stylesheet" type="text/css" href="../css/extend.css">
+</head>
+<body>
+<div id="tabs" class="easyui-tabs" data-options="fit:true">
+    <div title="还款审核">
+        <div class="searchBox" id="queryOne">
+            <div>
+                <select name="searchType" class="easyui-combobox"
+                        data-options="width:150,panelHeight:100,editable:false">
+                    <option value="">全部</option>
+                    <option value="NICKNAME">昵称</option>
+                    <option value="MOBILE">手机号码</option>
+                    <option value="IDCARD">身份证号</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" class="searchValue" name="searchValue"/>
+                <button class="hk-btn search" id="btnSearch">搜索</button>
+                <button class="hk-btn reset" id="btnReset">重置</button>
+            </div>
+        </div>
+        <div class="dgToolbar">
+            <button id="btnAudit" class="hk-btn audit">还款审核</button>
+        </div>
+        <table id="repayAudit-dg"></table>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        var h = $(window).height() - 106;
+        var childerPageHeight = ($("#tabs").tabs('options').height - 40) + 'px';
+
+        /*还款审核列表*/
+        function repayAuditList(data) {
+            $('#repayAudit-dg').datagrid({
+                cache: false,
+                rownumbers: false,
+                singleSelect: true,
+                pagination: true,
+                height: h,
+                pageSize: 50,
+                pageList: [10, 20, 50, 100, 200],
+                loadMsg: '加载中...',
+                multiSort: false,
+                url: '/repayVerify/list',
+                queryParams: data,
+                columns: [[
+                    {
+                        field: 'ck',
+                        checkbox: true,
+                    },
+                    {
+                        field: 'number',
+                        title: '序号',
+                        width: '4%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'businessKey',
+                        title: '业务流水号',
+                        hidden: true
+                    },
+                    {
+                        field: 'userId',
+                        title: '用户id',
+                        hidden: true
+                    },
+                    {
+                        field: 'mobile',
+                        title: '黑卡手机号',
+                        width: '7%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'idcardNo',
+                        title: '身份证号',
+                        width: '10%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'nickName',
+                        title: '黑卡昵称',
+                        width: '11%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'balance',
+                        title: '余额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'chargeCardNo',
+                        title: '银行卡号',
+                        width: '11%',
+                        halign: 'center',
+                        align: 'left',
+                        formatter: function (value, row, index) {
+                            return '<div style="margin-left:5px;">'+convertToBankNo(value)+'</div>';
+                        }
+                    },
+                    {
+                        field: 'chargerName',
+                        title: '打款人姓名',
+                        width: '11%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeDate',
+                        title: '打款时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value, "date")
+                        }
+                    },
+                    {
+                        field: 'chargeAmount',
+                        title: '打款金额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'totolBillAmount',
+                        title: '当前应还总额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'secondBalanceVerifyAdmin',
+                        title: '结算复审处理人',
+                        width: '8%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'secondBalanceVerifyTime',
+                        title: '结算复审时间',
+                        width: '13%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                ]],
+                emptyMessage: '暂无符合条件的数据',
+                onBeforeLoad: function () {
+                    $(this).datagrid("getPanel").find(".datagrid-header-check input").hide();
+                },
+                onBeforeCheck: function (index, row) {
+                    var rows = $(this).datagrid("getChecked");
+                    if (rows.length > 0 && rows[0] === row) {
+                        $(this).datagrid("uncheckRow", index);
+                        return false;
+                    }
+                }
+            })
+        }
+
+
+        $("#btnAudit").bind("click", function () {
+            var rows = $('#repayAudit-dg').datagrid("getChecked");
+            if (rows.length == 0) {
+                return $.messager.alert("提示", "请选择一条记录");
+            }
+
+            $.modalWait('open', {"msg": "加载中...", src: '../image/loading.gif'});
+            common.ajax({
+                url: '/repayVerify/getRepaymentReqInfo',
+                type: "post",
+                data: {"businessKey": rows[0].businessKey},
+                succ: function (res) {
+                    var data = encodeURIComponent(JSON.stringify(res.data));
+                    if (!$("#tabs").tabs('exists', '还款审核操作页')) {
+                        var content = '<iframe scrolling="auto" frameborder="0" src="repayAudit.html?key=' + rows[0].businessKey + '&data=' + data + '" style="width:100%;height:' + childerPageHeight + ';" ></iframe>';
+                        $("#tabs").tabs('add', {
+                            title: '还款审核操作页',
+                            content: content,
+                            closable: true
+                        });
+                    } else {
+                        $('#tabs').tabs('select', '还款审核操作页');
+                    }
+                },
+                complete: function (xhr) {
+                    $.modalWait('close');
+                    if (JSON.parse(xhr.responseText).status == 40141033) {
+                        window.refresReapyAudit();//刷新还款审核的列表
+                    }
+                }
+            });
+        })
+
+        $("#btnSearch").click(function () {
+            var type = $("#queryOne select[comboname=searchType]").combobox('getValue');
+            var value = $("#queryOne input[name=searchValue]").val();
+            repayAuditList({"key": type, "value": value});
+        })
+
+
+        $("#btnReset").click(function () {
+            var searchBox = $(this).parents('.searchBox');
+            searchBox.find("select[comboname=searchType]").combobox('setValue', '');
+            searchBox.find("input[name=searchValue]").val('');
+        })
+        $("#btnSearch").click();
+
+        window.refresReapyAudit = function () {
+            $("#btnSearch").click();
+        }
+        window.closeSelfTab = function () {
+            var tab = $('#tabs').tabs('getSelected');
+            $('#tabs').tabs('close', $('#tabs').tabs('getTabIndex', tab));
+        }
+    });
+    $(function () {
+        if (!common.hasCode("charge_repayment_repayVerify")) {//还款审核按钮权限
+            $("#btnAudit").remove();
+        }
+    })
+</script>
+</html>

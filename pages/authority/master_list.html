@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="js/auth_list.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/basic.css">
+    <link rel="stylesheet" type="text/css" href="../../css/layout.css">
+    <title>用户列表</title>
+    <style>
+        html, body, iframe {width: 100%; height: 100%;}
+        .mb10 {
+            margin-bottom: 10px;
+        }
+
+        .pd5 {
+            padding: 5px;
+        }
+
+        .fl {
+            float: left;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        table a {
+            color: #337ab7;
+            text-decoration: underline;
+
+        }
+
+        .oh {
+            overflow: hidden;
+        }
+
+        .action {
+            margin: 0 15px;
+        }
+
+        .addUserDone {
+            padding-left: 40px;
+            font-size: 14px;
+            line-height: 40px;
+        }
+
+    </style>
+</head>
+
+<body class="easyui-layout">
+<div class="easyui-tabs" data-options="fit:true">
+    <!--**********************************管理员列表********************************-->
+    <div title="管理员列表" >
+        <!--tab-->
+        <!--toobar-->
+        <div id="ms_tb" class="pd5 oh">
+            <form class="form-inline col-sm-9" role="form">
+                <div class="input-group col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-addon">用户搜索：</span>
+                        <input type="email" id="EmailSearch" class="form-control" placeholder="只能搜邮箱" style="width:190px;">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary mt-2" id="btnSearch" type="button" style="height:34px; margin-top:0;">搜索</button>
+                                </span>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-group fr">
+                <button id='btn-adduser' type="button" class="btn btn-primary mt-3">添加账号</button>
+            </div>
+        </div>
+        <!--列表-->
+        <table id="master_list" toolbar='#ms_tb' class="easyui-datagrid" fit="true"></table>
+        <!--弹出添加账户-->
+        <div id="dd-addUser" class="easyui-dialog" style="padding:20px;width:400px;height:200px;overflow:hidden;"
+             title="添加账号" iconCls="icon-ok"
+             buttons="#dlg-buttons" >
+            <form action="" role="form" class="form-horizontal">
+                <div class="form-group">
+                    <label for="realName" class="col-sm-2 control-label pd5">姓名：</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control easyui-validatebox" id="realName" data-options="required:true,missingMessage:'必填' " placeholder="请输入姓名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail" class="col-sm-2 control-label pd5">邮箱：</label>
+
+                    <div class="col-sm-8">
+                        <input type="email" class="form-control easyui-validatebox " id="userEmail"  data-options="required:true,validType:'email',invalidMessage:'请输入正确的邮箱', missingMessage:'必填' "  placeholder="请输入邮箱">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="dlg-buttons">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="addUserDoneBtn">确定</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+               onclick={RESETFORM()}>取消</a>
+        </div>
+        <div id="dd-addUserDone" class="easyui-dialog" title="添加成功" style="padding:20px;width:400px;height:200px;"
+             data-options="iconCls:'icon-save',resizable:true,modal:true">
+
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+    function RESETFORM(){
+        $("#realName").val("");
+        $("#userEmail").val("");
+        $('#dd-addUser').dialog('close')
+    };
+    $(function () {
+        Auth.initMalsterList();
+        Auth.loadMasterList();
+        /*
+         * 搜索
+         *
+         * */
+        $('#btnSearch').on('click',function(){
+            console.log(Auth.PAGENUMBER)
+            var email=$('#EmailSearch').val();
+            var emailReg=/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            var spaceReg=/^\s*$/g;
+            if(email==''){
+                $.messager.alert('提示','邮箱不能为空,请填写邮箱地址');
+            }else if(emailReg.test(email) ||spaceReg.test(email) ){
+                Auth.PAGENUMBER=1;
+                Auth.loadMasterList( Auth.PAGENUMBER,Auth.PAGESIZE,email);
+            }else{
+                $.messager.alert('提示','请输入正确的邮箱');
+            }
+        });
+
+
+    });
+
+</script>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/default/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+
+    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../static/js/common.js"></script>
+    <script type="text/javascript" src="../static/js/tree.js"></script>
+    <title>后台管理系统</title>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',title:'North Title',split:true, noheader:true" class="header jianbian">
+    <p class="h2 indexTitle">后台管理系统</p>
+    <p class="indexAdmin">
+        <span>欢迎你，<i id="adminerName"></i></span>
+        <span><a href="resetPassword.html">修改密码</a></span>
+        <span><a href="javascript:;" onclick="loginoutSure()">退出</a></span>
+    </p>
+</div>
+
+
+<div data-options="region:'west',title:'菜单栏',split:true" class="left">
+    <!-- 加载树形菜单-->
+    <ul id="navTree" class="navStyle"></ul>
+</div>
+
+<!-- 中间页面 -->
+<div data-options="region:'center' " class="center">
+    <div id="main-center" class="easyui-tabs" fit="true" border="false">
+        <div title="首页" style="padding: 20px;height: 100%;">
+            <div style="margin-top: 20px;">
+                <p>欢迎使用后台管理系统</p>
+
+                <p>&nbsp;</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
+<script>
+    function logout() {
+        localStorage.clear();
+        common.ajax({
+            url: "/login/logout",
+            type: "post",
+            succ: function (res) {
+                window.parent.location.href = 'login.html';
+            },
+            error: function () {
+                console.log('登出异常');
+            }
+        });
+        window.location.href = 'login.html'
+    }
+
+    function loginoutSure() {
+        jQuery.messager.confirm('提示:', '你确认退出运营管理系统吗?', function (event) {
+            if (event) {
+                console.log('你点击的是' + event);
+                logout();
+            } else {
+                console.log("你点击的是false");
+            }
+        });
+    }
+
+    function closeTab(which) {
+        var tabs = $('#main-center');
+        var tab = which === undefined ? tabs.tabs('getSelected') : tabs.tabs('getTab', which);
+        tabs.tabs('close', tabs.tabs('getTabIndex', tab));
+    }
+
+    $(function () {
+        $("#adminerName").text(localStorage.adminerName);
+    })
+</script>

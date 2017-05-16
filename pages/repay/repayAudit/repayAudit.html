@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>充值还款申请</title>
+    <link rel="stylesheet" type="text/css" href="../../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../../themes/icon.css">
+    <script type="text/javascript" src="../js/juicer-min.js"></script>
+    <script type="text/javascript" src="../js/datagrid-detailview.js"></script>
+    <script type="text/javascript" src="../js/repayCommon.js"></script>
+    <script type="text/javascript" src="../js/commonFunc.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/userIcon.css">
+    <link rel="stylesheet" type="text/css" href="../css/extend.css">
+
+</head>
+<body>
+<div id="container" class="container">
+    <div class="searchResult">
+        <div class="dgWarp">
+            <div class="dgTitle">账单记录</div>
+            <div class="dgBox">
+                <div id="billLog"></div>
+            </div>
+        </div>
+        <div class="dgWarp">
+            <div class="dgTitle">现金分期</div>
+            <div class="dgBox">
+                <div id="installment"></div>
+            </div>
+        </div>
+
+        <div class="field">
+            <span class="legend">执行操作</span>
+            <form class="performOperation">
+                <ul class="grid">
+                    <li class="caption"><span class="stress">*</span>任务提交至:</li>
+                    <li><label><input type="radio" name="type" value="REPAYING" index="0"/>审批通过，立刻还款</label></li>
+                    <li style="width: 120px"><label><input type="radio" name="type" value="REPAY_VERIFY_REJECT"
+                                                           index="1"/>审批不通过，驳回</label></li>
+                    <li class="caption"><span class="stress" style="margin-left: 50px">*</span>驳回原因:</li>
+                    <li><select name="reason"></select></li>
+                </ul>
+                <ul class="grid text">
+                    <li class="caption" style=""><span class="stress">*</span>其他原因:</li>
+                    <li>
+                        <textarea id="otherReason" class="easyui-validatebox"
+                                  data-options="validType:'maxLength[50]'" style="width: 600px;height: 50px"></textarea>
+                    </li>
+                </ul>
+                <div class="submitBtn">
+                    <a id="btnSubmit"></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="field">
+            <span class="legend">审批流水</span>
+
+            <div id="VerifyLog-dg"></div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script>
+    $(function () {
+        $.messager.defaults.ok = "确定";
+        $.messager.defaults.cancel = "取消";
+
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    var len = $.trim(value).length;
+                    return len <= param[0];
+                },
+                message: "输入内容长度不能超过{0}个字."
+            }
+        });
+
+        var businessKey = getQueryString('key');
+        /*提交*/
+        $("#btnSubmit").linkbutton({
+            iconCls: 'icon-submit',
+            text: '提交任务',
+            onClick: function () {
+                var type = $(".performOperation input[type=radio][name=type]:checked").val();
+                if (!type) {
+                    changeBGD($(".performOperation input[type=radio][name=type]").parents('ul'));
+                    return $.messager.alert('提示', '请选择提交至何种状态!');
+                }
+
+                var reason = "";
+                var otherReason = "";
+                if (type == "REPAY_VERIFY_REJECT") {
+                    reason = $(".performOperation select[name=reason]").val();
+                    if (!reason) {
+                        changeBGD($(".performOperation select[name=reason]"));
+                        return $.messager.alert('提示', '请选择驳回原因!');
+                    }
+                    var textarea = $("#otherReason");
+                    otherReason = $.trim(textarea.val());
+                    if ($(".performOperation select[name=reason]").find("option:selected").attr("isneedremark") == "1" && !otherReason) {
+                        changeBGD(textarea);
+                        return $.messager.alert('提示', '请输入其他原因!');
+                    }
+                    if (!textarea.validatebox("isValid")) {
+                        return textarea.focus();
+                    }
+                }
+
+                var data = {
+                    "businessKey": businessKey,
+                    "result": type,
+                    "rejectReason": reason,
+                    "rejectReasonMemo": otherReason
+                };
+                if (type == 'REPAYING') {
+                    $.messager.confirm("还款警告", "确认还款？", function (r) {
+                        if (r) {
+                            common.ajax({
+                                url: '/repayVerify/repayVerify',
+                                type: "post",
+                                data: data,
+                                succ: function (res) {
+                                    if (res.message == '' && res.status == 0) {
+                                        $.messager.alert('提示', '任务提交成功', '', function () {
+                                            window.parent.refresReapyAudit();//刷新待结算初审的列表
+                                            window.parent.closeSelfTab();//关闭当前页面
+                                        });
+                                    } else {
+                                        $.messager.alert('错误', res.message);
+                                    }
+                                }
+                            });
+                        }
+                    })
+                } else {
+                    common.ajax({
+                        url: '/repayVerify/repayVerify',
+                        type: "post",
+                        data: data,
+                        succ: function (res) {
+                            if (res.message == '' && res.status == 0) {
+                                $.messager.alert('提示', '驳回成功', '', function () {
+                                    window.parent.refresReapyAudit();//刷新还款审核的列表
+                                    window.parent.closeSelfTab();//关闭当前页面
+                                });
+                            } else {
+                                $.messager.alert('错误', res.message);
+                            }
+                        }
+                    });
+                }
+            }
+        })
+        getRejectReason(2);
+
+        var data=JSON.parse(decodeURIComponent(getQueryString("data")));
+        if(data){
+            data.user.repayAmount = (parseFloat(data.repayAmount) || 0).toFixed(2);
+            data.user.repayAmountNow = (parseFloat(data.repayAmountNow) || 0).toFixed(2);
+            data.user.chargeAmount = (parseFloat(data.user.chargeAmount) || 0).toFixed(2);
+            data.user.chargeTime = convertToCNDate(data.user.chargeTime,"date");
+            data.user.chargeCardNum =convertToBankNo(data.user.chargeCardNum);
+            $.parser.parse($(".searchResult").prepend(juicer(playMoneyTpl, data.user)))
+            billLog("#billLog", data.bills);
+            installment("#installment", data.loanBills);
+        }
+
+        VerifyLog($("#VerifyLog-dg"), businessKey);
+    })
+</script>
+</html>

@@ -1,0 +1,179 @@
+/*
+* layout 布局；
+*/
+html, body, iframe {width: 100%; height: 100%;}
+.header {height:80px; background: #036698;}
+.header p {color:#fff;}
+
+.indexTitle { padding-left: 35px; }
+
+.indexAdmin {position: absolute; right: 40px; top:40px; font-size:  14px; }
+.indexAdmin span {margin-right:15px;}
+
+.header p span a {color:#fff;}
+.left {width:200px; background-color:#313541;}
+.center {padding:5px;background:#eee;}
+
+.footer {height:40px; text-align: center;   padding-top: 5px; background: #036698; color:#fff;}
+/*
+* login
+*/
+.article { background: url(../images/heika.jpg) no-repeat center; position: absolute; top:0px; bottom: 0px; overflow: auto;  width: 100%; background-size: cover;}
+.content {width: 400px;}
+.testPosition {position: absolute; left:65%; top:10%;}
+.loginTitle {color:#a8a8a8;text-align: center; margin-bottom: 40px; }
+.loginInput{width: 80%;  margin:  0 auto; background-color: #757575; color:#e0b96e; }
+.loginButton {background: #24272e; margin-bottom: 25px; color:#e0b96e;}
+.usernamePar , .passwordPar {position: relative;}
+.errorStyle {width: 320px; height:34px;  margin-top: 10px; margin-left:40px; display: none; font-size: 14px; color:#e0b96e;}
+.input_style{width:150px; margin: 3px 0 0 5px; padding-left:15px;height:26px;border-radius: 5px 5px; outline: none;border: 1px solid #95B8E7;}
+.select_style{ border: 1px solid #337ab7; border-radius: 5px 5px; outline: none;height:22px; margin-left: 4px; width: 100px;}
+.newButtonUi{display: inline-block;border: 1px solid #4adb7c;color: #4adb7c;padding: 2px 20px;border-radius: 20px 20px;}
+.mt-1{margin-top: 1px}
+.mt-2{margin-top: 2px}
+.mt-3{margin-top: 3px}
+/*
+*  resetPassword
+*/
+.article { background: url(../images/heika.jpg) no-repeat center; position: absolute; top:0px; bottom: 0px; overflow: auto;  width: 100%; background-size: cover;}
+.content {width: 400px;}
+.testPosition {position: absolute; left:65%; top:10%; }
+.loginTitle {text-align: center; margin-bottom: 20px;  color:#a8a8a8;}
+.loginInput{width: 80%;  margin:  0 auto; background-color: #757575; color:#e0b96e; }
+.loginButton {background: #24272e; margin-bottom: 25px; color:#e0b96e;}
+.errorStyle {width: 320px; height:34px;  margin-top: 10px; margin-left:40px; display: none; font-size: 14px; color:#e0b96e;}
+
+.publicErrorPar {position: relative;}
+.oldPassword {position: absolute;  right: -220px;  top:100px; display: none;}
+.newPassword {position: absolute;  right: -220px;  top:150px;  display: none;}
+.resetPassword {position: absolute;  right: -220px; top:200px;   display: none;}
+
+/*tree 的样式*/
+.jianbian{background-image: -webkit-linear-gradient(to bottom ,#22252c,#2c2f36); background-image:linear-gradient(to bottom,#22252c,#2c2f36)}
+
+#navTree {
+    color: #fff;
+    width: 100%;
+}
+
+#navTree ul li {
+    width: 100%;
+}
+
+#navTree > li {
+    font-size: 14px;
+
+    height: 40px;
+    display: block;
+}
+
+#navTree > li:nth-child(odd) {
+    background: #313541;
+}
+
+#navTree > li:nth-child(even) {
+    background: #454954;
+}
+
+#navTree .tree-title {
+    position: absolute;
+    top: 0;
+    left: 55px;
+    line-height: 40px;
+    height: 40px;
+    display: block;
+    font-size: 14px;
+}
+
+/*标题鼠标高亮*/
+#navTree li > div:hover {
+    background-color: #737f97;
+}
+.tree-node-hover{
+    color: #ffffff;
+}
+
+#navTree > li > div {
+    position: relative;
+    line-height: 40px;
+    height: 40px;
+}
+.tree-node{
+    height: 40px;
+    line-height: 40px;
+}
+/*一级大菜单的icon*/
+.navTree_usr_search {
+    background: url(../images/icon/menu_vip.png) no-repeat 22px 12px;
+}
+
+.navTree_usrmanager_mg {
+    background: url(../images/icon_cms.png) no-repeat 10px -294px;
+}
+
+.navTree_valid_code_search {
+    background: url(../images/icon_cms.png) no-repeat 10px -84px;
+}
+
+.navTree_system_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -252px;
+}
+.navTree_recharage_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -168px;
+}
+
+
+.navTree_withdrawal_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -126px;
+}
+
+
+.navTree_auth_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -40px;
+}
+
+.navTree_charge_mobile_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -210px;
+}
+
+.navTree_charge_repayment {
+    background: url(../images/icon_cms.png) no-repeat 10px -168px;
+}
+.tree-icon{
+    background: none;
+}
+
+/*调整折叠按钮位置*/
+#navTree li > div .tree-hit {
+    position: absolute;
+    right: 13px;
+    top: 10px;
+}
+
+/*二级菜单的icon*/
+#navTree li > ul > li > div {
+    font-size: 12px !important;
+    position: relative;
+    background: #313541 url(../images/icon2.png) no-repeat 22px -41px;
+}
+
+/*导航菜单滚动条的样式*/
+.panel.layout-panel.layout-panel-west.layout-split-west ::-webkit-scrollbar {
+    width: 0px;
+}
+
+.panel.layout-panel.layout-panel-west.layout-split-west {
+    scrollBar: 0;
+}
+
+/*::-webkit-scrollbar-track{background-color:#bee1eb;}
+::-webkit-scrollbar-thumb{background-color:#00aff0;}
+::-webkit-scrollbar-thumb:hover {background-color:#9c3}
+::-webkit-scrollbar-thumb:active {background-color:#00aff0}*/
+
+
+
+
+
+
+

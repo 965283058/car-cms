@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>充值审核</title>
+    <link rel="stylesheet" type="text/css" href="../../../themes/default/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../../js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../../themes/icon.css">
+    <script type="text/javascript" src="../js/juicer-min.js"></script>
+    <script type="text/javascript" src="../js/extend.js"></script>
+    <script type="text/javascript" src="../js/datagrid-detailview.js"></script>
+    <script type="text/javascript" src="../js/repayCommon.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/userIcon.css">
+    <link rel="stylesheet" type="text/css" href="../css/extend.css">
+</head>
+<body>
+
+<div id="tabs" class="easyui-tabs" data-options="fit:true">
+    <div title="待结算初审">
+        <div class="searchBox" id="queryOne">
+            <div>
+                <select name="searchType" class="easyui-combobox"
+                        data-options="width:150,panelHeight:100,editable:false">
+                    <option value="">全部</option>
+                    <option value="NICKNAME">昵称</option>
+                    <option value="MOBILE">手机号码</option>
+                    <option value="IDCARD">身份证号</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" class="searchValue" name="searchValue"/>
+                <button class="hk-btn search" name="search">搜索</button>
+                <button class="hk-btn reset" name="reset">重置</button>
+            </div>
+        </div>
+        <div class="dgToolbar">
+            <button id="btnFirstAudit" class="hk-btn audit">结算初审</button>
+        </div>
+        <table id="balanceFirstAudit-dg"></table>
+    </div>
+    <div title="待财务审核">
+        <div class="searchBox" id="queryTwo">
+            <div>
+                <select name="searchType" class="easyui-combobox"
+                        data-options="width:150,panelHeight:100,editable:false">
+                    <option value="">全部</option>
+                    <option value="NICKNAME">昵称</option>
+                    <option value="MOBILE">手机号码</option>
+                    <option value="IDCARD">身份证号</option>
+                </select>
+            </div>
+
+            <div>
+                <input type="text" class="searchValue" name="searchValue"/>
+                <button class="hk-btn search" name="search">搜索</button>
+                <button class="hk-btn reset" name="reset">重置</button>
+            </div>
+        </div>
+        <div class="dgToolbar">
+            <button id="btnAccountantAudit" class="hk-btn audit">财务审核</button>
+        </div>
+        <table id="accountantAudit-dg"></table>
+    </div>
+    <div title="待结算复审">
+        <div class="searchBox" id="queryThree">
+            <div>
+                <select name="searchType" class="easyui-combobox"
+                        data-options="width:150,panelHeight:100,editable:false">
+                    <option value="">全部</option>
+                    <option value="NICKNAME">昵称</option>
+                    <option value="MOBILE">手机号码</option>
+                    <option value="IDCARD">身份证号</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" class="searchValue" name="searchValue"/>
+                <button class="hk-btn search" name="search">搜索
+                </button>
+                <button class="hk-btn reset" name="reset">重置</button>
+            </div>
+        </div>
+        <div class="dgToolbar">
+            <button id="btnSecondAudit" class="hk-btn audit">结算复审</button>
+        </div>
+        <table id="balanceSecondAudit-dg"></table>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        $("#tabs").tabs({
+            onSelect: function (title, index) {
+                $(this).tabs("getTab", index).find("div.searchBox button[name=search]").click();
+            }
+        });
+
+        var h = $(window).height() - 106;
+        var childerPageHeight = ($("#tabs").tabs('options').height - 40) + 'px';
+
+        /*待结算初审*/
+        function balanceFirstAudit(data) {
+            $('#balanceFirstAudit-dg').datagrid({
+                cache: false,
+                rownumbers: false,
+                singleSelect: true,
+                pagination: true,
+                height: h,
+                pageSize: 50,
+                pageList: [10, 20, 50, 100, 200],
+                loadMsg: '加载中...',
+                multiSort: false,
+                queryParams: data,
+                url: '/firstBalanceVerify/list',
+                columns: [[
+                    {
+                        field: 'ck',
+                        checkbox: true,
+                    },
+                    {
+                        field: 'number',
+                        title: '序号',
+                        width: '3%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'businessKey',
+                        title: '业务流水号',
+                        hidden: true
+                    },
+                    {
+                        field: 'userId',
+                        title: '用户id',
+                        hidden: true
+                    },
+                    {
+                        field: 'mobile',
+                        title: '黑卡手机号',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'idcardNo',
+                        title: '身份证号',
+                        width: '10%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'nickName',
+                        title: '黑卡昵称',
+                        width: '10%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'balance',
+                        title: '余额',
+                        width: '7%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'chargeCardNo',
+                        title: '银行卡号',
+                        width: '11%',
+                        halign: 'center',
+                        align: 'left',
+                        formatter: function (value, row, index) {
+                            return '<div style="margin-left:5px;">' + convertToBankNo(value) + '</div>';
+                        }
+                    },
+                    {
+                        field: 'chargerName',
+                        title: '打款人姓名',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeDate',
+                        title: '打款时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value, "date")
+                        }
+                    },
+                    {
+                        field: 'chargeAmount',
+                        title: '打款金额',
+                        width: '7%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'totolBillAmount',
+                        title: '当前应还总额',
+                        width: '7%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'proposer',
+                        title: '申请人',
+                        width: '8%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'commitTime',
+                        title: '申请时间',
+                        width: '11%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                ]],
+                emptyMessage: '暂无符合条件的数据',
+                onLoadSuccess: function (data) {
+                    $.fn.datagrid.defaults.onLoadSuccess.call(this, data);//如果使用onLoadSuccess事件 请先调用此句
+                    $(this).datagrid("getPanel").find(".datagrid-header-check input").hide();
+                    refreshFirstAuditCount();
+                },
+                onBeforeCheck: function (index, row) {
+                    var rows = $(this).datagrid("getChecked");
+                    if (rows.length > 0 && rows[0] === row) {
+                        $(this).datagrid("uncheckRow", index);
+                        return false;
+                    }
+                }
+            })
+        }
+
+        $("#queryOne button[name=search]").click(function () {
+            var type = $("#queryOne select[comboname=searchType]").combobox('getValue');
+            var value = $("#queryOne input[name=searchValue]").val();
+            balanceFirstAudit({"key": type, "value": value});
+        })
+
+        $("#btnFirstAudit").bind("click", function () {
+            var rows = $('#balanceFirstAudit-dg').datagrid("getChecked");
+            if (rows.length == 0) {
+                return $.messager.alert("提示", "请选择一条记录");
+            }
+            $.modalWait('open', {"msg": "加载中...", src: '../image/loading.gif'});
+            common.ajax({
+                url: '/firstBalanceVerify/getRepaymentReqInfo',
+                type: "post",
+                data: {"businessKey": rows[0].businessKey},
+                succ: function (res) {
+                    var data = encodeURIComponent(JSON.stringify(res.data));
+                    if (!$("#tabs").tabs('exists', '结算初审操作页')) {
+                        var content = '<iframe scrolling="auto" frameborder="0" src="balanceFirstAudit.html?key=' + rows[0].businessKey + '&data=' + data + '" style="width:100%;height:' + childerPageHeight + ';" ></iframe>';
+                        $("#tabs").tabs('add', {
+                            title: '结算初审操作页',
+                            content: content,
+                            closable: true
+                        });
+                    } else {
+                        $('#tabs').tabs('select', '结算初审操作页');
+                    }
+                },
+                complete: function (xhr) {
+                    $.modalWait('close');
+                    if (JSON.parse(xhr.responseText).status == 40141033) {
+                        window.refreshFirstAudit();//刷新待结算初审的列表
+                    }
+                }
+            });
+        })
+
+        /*待财务审核*/
+        function accountantAudit(data) {
+            $('#accountantAudit-dg').datagrid({
+                cache: false,
+                rownumbers: false,
+                singleSelect: true,
+                pagination: true,
+                height: h,
+                pageSize: 50,
+                pageList: [10, 20, 50, 100, 200],
+                loadMsg: '加载中...',
+                multiSort: false,
+                url: '/financeVerify/list',
+                queryParams: data,
+                columns: [[
+                    {
+                        field: 'ck',
+                        checkbox: true,
+                    },
+                    {
+                        field: 'number',
+                        title: '序号',
+                        width: '4%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'businessKey',
+                        title: '业务流水号',
+                        hidden: true
+                    },
+                    {
+                        field: 'userId',
+                        title: '用户id',
+                        hidden: true
+                    },
+                    {
+                        field: 'mobile',
+                        title: '黑卡手机号',
+                        width: '7%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'idcardNo',
+                        title: '身份证号',
+                        width: '10%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'nickName',
+                        title: '黑卡昵称',
+                        width: '11%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeCardNo',
+                        title: '银行卡号',
+                        width: '11%',
+                        halign: 'center',
+                        align: 'left',
+                        formatter: function (value, row, index) {
+                            return '<div style="margin-left:5px;">' + convertToBankNo(value) + '</div>';
+                        }
+                    },
+                    {
+                        field: 'chargerName',
+                        title: '打款人姓名',
+                        width: '9%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeDate',
+                        title: '打款时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value, "date")
+                        }
+                    },
+                    {
+                        field: 'chargeAmount',
+                        title: '打款金额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'totolBillAmount',
+                        title: '当前应还总额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'proposer',
+                        title: '申请人',
+                        width: '8%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'commitTime',
+                        title: '申请时间',
+                        width: '11%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'status',
+                        title: '状态',
+                        width: '8%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'firstBalanceVerifyAdmin',
+                        title: '结算初审处理人',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'firstBalanceVerifyTime',
+                        title: '结算初审时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'secondBalanceVerifyAdmin',
+                        title: '结算复审处理人',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'secondBalanceVerifyTime',
+                        title: '结算复审处理时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                ]],
+                onLoadError: function (data) {
+                    $.messager.alert('提示', JSON.parse(data.responseText).message);
+                    return false;
+                },
+                emptyMessage: '暂无符合条件的数据',
+                onLoadSuccess: function (data) {
+                    $.fn.datagrid.defaults.onLoadSuccess.call(this, data);//如果使用onLoadSuccess事件 请先调用此句
+                    $(this).datagrid("getPanel").find(".datagrid-header-check input").hide();
+                    refreshAccountantAuditCount();
+                },
+            })
+        }
+
+        $("#queryTwo button[name=search]").click(function () {
+            var type = $("#queryTwo select[comboname=searchType]").combobox('getValue');
+            var value = $("#queryTwo input[name=searchValue]").val();
+            accountantAudit({"key": type, "value": value});
+        })
+
+        $("#btnAccountantAudit").bind("click", function () {
+            var rows = $('#accountantAudit-dg').datagrid("getChecked");
+            if (rows.length == 0) {
+                return $.messager.alert("提示", "请选择一条记录");
+            }
+
+            $.modalWait('open', {"msg": "加载中...", src: '../image/loading.gif'});
+            common.ajax({
+                url: '/financeVerify/getRepaymentReqInfo',
+                type: "post",
+                data: {"businessKey": rows[0].businessKey},
+                succ: function (res) {
+                    var data = encodeURIComponent(JSON.stringify(res.data));
+                    if (!$("#tabs").tabs('exists', '财务审核操作页')) {
+                        var content = '<iframe scrolling="auto" frameborder="0" src="accountantAudit.html?key=' + rows[0].businessKey + '&data=' + data + '" style="width:100%;height:' + childerPageHeight + ';" ></iframe>';
+                        $("#tabs").tabs('add', {
+                            title: '财务审核操作页',
+                            content: content,
+                            closable: true
+                        });
+                    } else {
+                        $('#tabs').tabs('select', '财务审核操作页');
+                    }
+                },
+                complete: function (xhr) {
+                    $.modalWait('close');
+                    if (JSON.parse(xhr.responseText).status == 40141033) {
+                        window.refreshAccountantAudit();//刷新待财务审核的列表
+                    }
+                }
+            });
+
+        })
+
+        /*--------------------------待结算复审---------------------------------*/
+        function balanceSecondAudit(data) {
+            $('#balanceSecondAudit-dg').datagrid({
+                cache: false,
+                rownumbers: false,
+                singleSelect: true,
+                pagination: true,
+                height: h,
+                pageSize: 50,
+                pageList: [10, 20, 50, 100, 200],
+                loadMsg: '加载中...',
+                multiSort: false,
+                queryParams: data,
+                url: '/secondBalanceVerify/list',
+                columns: [[
+                    {
+                        field: 'ck',
+                        checkbox: true,
+                    },
+                    {
+                        field: 'number',
+                        title: '序号',
+                        width: '4%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'businessKey',
+                        title: '业务流水号',
+                        hidden: true
+                    },
+                    {
+                        field: 'userId',
+                        title: '用户id',
+                        hidden: true
+                    },
+                    {
+                        field: 'mobile',
+                        title: '黑卡手机号',
+                        width: '7%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'idcardNo',
+                        title: '身份证号',
+                        width: '10%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'nickName',
+                        title: '黑卡昵称',
+                        width: '11%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeCardNo',
+                        title: '银行卡号',
+                        width: '11%',
+                        halign: 'center',
+                        align: 'left',
+                        formatter: function (value, row, index) {
+                            return '<div style="margin-left:5px;">' + convertToBankNo(value) + '</div>';
+                        }
+                    },
+                    {
+                        field: 'chargerName',
+                        title: '打款人姓名',
+                        width: '9%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'chargeDate',
+                        title: '打款时间',
+                        width: '8%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value, "date")
+                        }
+                    },
+                    {
+                        field: 'chargeAmount',
+                        title: '打款金额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'totolBillAmount',
+                        title: '当前应还总额',
+                        width: '8%',
+                        halign: 'center',
+                        align: 'right',
+                        formatter: function (value, row, index) {
+                            return (parseFloat(value) || 0).toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'proposer',
+                        title: '申请人',
+                        width: '8%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'commitTime',
+                        title: '申请时间',
+                        width: '11%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'firstBalanceVerifyAdmin',
+                        title: '结算初审处理人',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'firstBalanceVerifyTime',
+                        title: '结算初审时间',
+                        width: '11%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                    {
+                        field: 'financeVerifyAdmin',
+                        title: '财务审核处理人',
+                        width: '8%',
+                        align: 'center'
+                    },
+                    {
+                        field: 'financeVerifyTime',
+                        title: '财务审核处理时间',
+                        width: '11%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return convertToCNDate(value)
+                        }
+                    },
+                ]],
+                onLoadError: function (data) {
+                    $.messager.alert('提示', JSON.parse(data.responseText).message);
+                    return false;
+                },
+                emptyMessage: '暂无符合条件的数据',
+                onLoadSuccess: function (data) {
+                    $.fn.datagrid.defaults.onLoadSuccess.call(this, data);//如果使用onLoadSuccess事件 请先调用此句
+                    $(this).datagrid("getPanel").find(".datagrid-header-check input").hide();
+                    refresSecondAuditCount();
+                },
+            })
+        }
+
+        $("#queryThree button[name=search]").click(function () {
+            var type = $("#queryThree select[comboname=searchType]").combobox('getValue');
+            var value = $("#queryThree input[name=searchValue]").val();
+            balanceSecondAudit({"key": type, "value": value});
+        })
+
+        $("#btnSecondAudit").bind("click", function () {
+            var rows = $('#balanceSecondAudit-dg').datagrid("getChecked");
+            if (rows.length == 0) {
+                return $.messager.alert("提示", "请选择一条记录");
+            }
+            $.modalWait('open', {"msg": "加载中...", src: '../image/loading.gif'});
+            common.ajax({
+                url: '/secondBalanceVerify/getRepaymentReqInfo',
+                type: "post",
+                data: {"businessKey": rows[0].businessKey},
+                succ: function (res) {
+                    var data = encodeURIComponent(JSON.stringify(res.data));
+                    if (!$("#tabs").tabs('exists', '结算复审操作页')) {
+                        var content = '<iframe scrolling="auto" frameborder="0" src="balanceSecondAudit.html?key=' + rows[0].businessKey + '&data=' + data + '" style="width:100%;height:' + childerPageHeight + ';" ></iframe>';
+                        $("#tabs").tabs('add', {
+                            title: '结算复审操作页',
+                            content: content,
+                            closable: true
+                        });
+                    } else {
+                        $('#tabs').tabs('select', '结算复审操作页');
+                    }
+                },
+                complete: function (xhr) {
+                    $.modalWait('close');
+                    if (JSON.parse(xhr.responseText).status == 40141033) {
+                        window.refresSecondAudit();//刷新结算复审列表
+                    }
+                }
+            });
+        })
+
+
+        /*--------------------------重置按钮---------------------------------*/
+        $("div.searchBox button[name=reset]").click(function () {
+            var searchBox = $(this).parents('.searchBox');
+            searchBox.find("select[comboname=searchType]").combobox('setValue', '');
+            searchBox.find("input[name=searchValue]").val('');
+        })
+
+        //结算初审气泡
+        window.refreshFirstAuditCount = function () {
+            if (common.hasCode("charge_repayment_first_balance_verify")) {
+                common.ajax({
+                    url: '/firstBalanceVerify/getTaskCnt',
+                    type: "post",
+                    succ: function (res) {
+                        $("#tabs").tabs("setTitleTip", {
+                            which: "待结算初审",
+                            number: parseInt(res.data.taskCnt)
+                        });
+                    }
+                })
+            }
+        }
+        //财务审核气泡
+        window.refreshAccountantAuditCount = function () {
+            if (common.hasCode("charge_repayment_finance_verify")) {
+                common.ajax({
+                    url: '/financeVerify/getTaskCnt',
+                    type: "post",
+                    succ: function (res) {
+                        $("#tabs").tabs("setTitleTip", {
+                            which: "待财务审核",
+                            number: parseInt(res.data.taskCnt)
+                        });
+                    }
+                })
+            }
+        }
+        //结算复审气泡
+        window.refresSecondAuditCount = function () {
+            if (common.hasCode("charge_repayment_second_balance_verify")) {
+                common.ajax({
+                    url: '/secondBalanceVerify/getTaskCnt',
+                    type: "post",
+                    succ: function (res) {
+                        $("#tabs").tabs("setTitleTip", {
+                            which: "待结算复审",
+                            number: parseInt(res.data.taskCnt)
+                        });
+                    }
+                })
+            }
+        }
+
+        window.refreshFirstAudit = function () {
+            $("#queryOne button[name=search]").click();
+        }
+        window.refreshAccountantAudit = function () {
+            $("#queryTwo button[name=search]").click();
+        }
+        window.refresSecondAudit = function () {
+            $("#queryThree button[name=search]").click();
+        }
+        window.closeSelfTab = function () {
+            var tab = $('#tabs').tabs('getSelected');
+            $('#tabs').tabs('close', $('#tabs').tabs('getTabIndex', tab));
+        }
+    })
+
+    $(function () {
+        if (!common.hasCode("charge_repayment_second_balance_verify")) {
+            $("#tabs").tabs("close", 2)
+        }
+        if (!common.hasCode("charge_repayment_finance_verify")) {
+            $("#tabs").tabs("close", 1)
+        }
+        if (!common.hasCode("charge_repayment_first_balance_verify")) {
+            $("#tabs").tabs("close", 0)
+        } else {
+            $("#queryOne button[name=search]").click();
+        }
+
+        if (!common.hasCode("charge_repayment_first_verify")) {//结算初审按钮权限
+            $("#btnFirstAudit").remove();
+        }
+        if (!common.hasCode("charge_repayment_financeVerify")) {//财务审核按钮权限
+            $("#btnAccountantAudit").remove();
+        }
+        if (!common.hasCode("charge_repayment_second_verify")) {//结算复审按钮权限
+            $("#btnSecondAudit").remove();
+        }
+
+        window.refreshFirstAuditCount();
+        window.refreshAccountantAuditCount();
+        window.refresSecondAuditCount();
+    })
+</script>
+</html>
