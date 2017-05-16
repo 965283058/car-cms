@@ -341,7 +341,10 @@ html, body {
     outline:none;
 }
 
-
+.cells .content>label{
+    height: 25px;
+    line-height: 25px;
+}
 
 
 

@@ -9,6 +9,11 @@ $.extend($.fn.datagrid.defaults, {
         if (!opts.url) {
             return false;
         }
+        for(var k in param){
+            if(param[k]===undefined||param[k]===""){
+                delete param[k]
+            }
+        }
         common.ajax({
             type: opts.method,
             url: opts.url,
@@ -43,11 +48,11 @@ $.extend($.fn.datagrid.defaults, {
         if (typeof resText === 'object' && resText.data) {
             var _data = {};
             if (options.pagination) {
-                if (resText.data.pageInfo && resText.data.pageInfo.pageNum) {
-                    _data.page = resText.data.pageInfo.pageNum;
+                if (resText.data.pageNumber) {
+                    _data.page = resText.data.pageNumber;
                 }
-                if (resText.data.total || resText.data.total === 0) {
-                    _data.total = resText.data.total;
+                if (resText.data.totalElements || resText.data.totalElements === 0) {
+                    _data.total = resText.data.totalElements;
                 }
                 if (!_data.total) {
                     if (resText.data.pageInfo && resText.data.pageInfo.totalElements) {
@@ -56,7 +61,7 @@ $.extend($.fn.datagrid.defaults, {
                 }
             }
             if (typeof resText.data === 'object') {
-                _data.rows = resText.data;
+                _data.rows = resText.data.elements;
                 for (var i = 0; i < _data.rows.length; i++) {
                     _data.rows[i].number = i + 1;
                 }

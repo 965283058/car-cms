@@ -14,7 +14,7 @@
     <title>后台管理系统</title>
 </head>
 <body class="easyui-layout">
-<div data-options="region:'north',title:'North Title',split:true, noheader:true" class="header jianbian">
+<div data-options="region:'north',title:'North Title',split:true, noheader:true" class="header">
     <p class="h2 indexTitle">后台管理系统</p>
     <p class="indexAdmin">
         <span>欢迎你，<i id="adminerName"></i></span>
@@ -22,13 +22,10 @@
         <span><a href="javascript:;" onclick="loginoutSure()">退出</a></span>
     </p>
 </div>
-
-
 <div data-options="region:'west',title:'菜单栏',split:true" class="left">
     <!-- 加载树形菜单-->
     <ul id="navTree" class="navStyle"></ul>
 </div>
-
 <!-- 中间页面 -->
 <div data-options="region:'center' " class="center">
     <div id="main-center" class="easyui-tabs" fit="true" border="false">
@@ -41,8 +38,6 @@
         </div>
     </div>
 </div>
-
-
 
 </body>
 </html>

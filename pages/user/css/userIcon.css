@@ -41,7 +41,7 @@
     line-height: 20px;
 }
 
-/*---------------×Ô¶¨Òå°´Å¥----------------*/
+/*---------------ï¿½Ô¶ï¿½ï¿½å°´Å¥----------------*/
 .hk-btn {
     padding: 2px 4px 2px 22px;
     height: 21px;
@@ -97,8 +97,11 @@
 .hk-btn.compute {
     background: url('../image/compute.png') no-repeat 3px 2px;
 }
+.hk-btn.add {
+    background: url('../image/edit.gif') no-repeat 3px 2px;
+}
 
-/*---------------×Ô¶¨ÒåÍ¼±ê----------------*/
+/*---------------ï¿½Ô¶ï¿½ï¿½ï¿½Í¼ï¿½ï¿½----------------*/
 
 .user-icon {
     background-position: center left;
@@ -193,7 +196,7 @@
 
 }
 
-/*----------À©Õ¹EasyUIÍ¼±ê-----------*/
+/*----------ï¿½ï¿½Õ¹EasyUIÍ¼ï¿½ï¿½-----------*/
 .icon-submit {
     background: url('../image/submit.png') no-repeat center center;
 }
@@ -206,7 +209,7 @@
     background: url('../image/preview.png') no-repeat center center;
 }
 
-/*¸üÕýEasyUI DataGrid Õ¹¿ª¹Ø±Õ°´Å¥*/
+/*ï¿½ï¿½ï¿½ï¿½EasyUI DataGrid Õ¹ï¿½ï¿½ï¿½Ø±Õ°ï¿½Å¥*/
 .datagrid-row-collapse {
     background: url("../image/close.png") no-repeat 0px center;
 }
