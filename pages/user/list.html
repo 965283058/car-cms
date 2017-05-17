@@ -470,13 +470,13 @@
                             if (result) {
                                 var num = numberbox.numberbox("getValue");
                                 var timeType = $("#renew-dialog").find("input[type=radio]:checked").val();
-                                var data = {useId: id, "num": num, "timeType": timeType}
+                                var data = {userId: id, "num": num, "timeType": timeType}
                                 common.ajax({
                                     url: '/user/renew',
                                     type: "post",
                                     data: data,
                                     succ: function (res) {
-                                        $("#user-dialog").dialog("destroy");
+                                        $("#renew-dialog").dialog("destroy");
                                         $.messager.alert('提示', '续费成功');
                                         list()
                                     }
@@ -510,7 +510,7 @@
                 common.ajax({
                     url: '/user/resetMacCode',
                     type: "post",
-                    data: {useId: id},
+                    data: {userId: id},
                     succ: function (res) {
                         $("#user-dialog").dialog("destroy");
                         $.messager.alert('提示', '清理成功');
@@ -580,7 +580,7 @@
                 common.ajax({
                     url: '/user/kickOut',
                     type: "post",
-                    data: {useId: id},
+                    data: {userId: id},
                     succ: function (res) {
                         $("#user-dialog").dialog("destroy");
                         $.messager.alert('提示', '踢出成功');
@@ -601,7 +601,7 @@
                 common.ajax({
                     url: '/user/lock',
                     type: "post",
-                    data: {useId: data.id, lockStatus: !data.lockStatus},
+                    data: {userId: data.id, status: !data.lockStatus},
                     succ: function (res) {
                         $("#user-dialog").dialog("destroy");
                         $.messager.alert('提示', '锁定成功');
