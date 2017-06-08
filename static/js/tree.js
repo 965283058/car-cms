@@ -6,12 +6,24 @@ var treeData = [
         href: "user/list.html"
     },
     {
+        code: "message_manager",
+        text: "信息管理",
+        iconCls: "navTree_message_manager",
+        href: "message/list.html"
+    },
+    {
+        code: "auth_manager",
+        text: "客户端管理",
+        iconCls: "navTree_charge_client_manager",
+        href: "client/list.html"
+    },
+    {
         code: "auth_manager",
         text: "后台管理权限",
         iconCls: "navTree_auth_manager",
         href: "authority/master_list.html"
     },
-    {
+  /*  {
         code: "charge_repayment",
         text: "充值还款管理",
         iconCls: "navTree_charge_repayment",
@@ -21,7 +33,7 @@ var treeData = [
             text: "还款试算",
             href: "repay/repayCompute.html",
         } ]
-    },
+    },*/
 
 ];
 

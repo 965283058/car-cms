@@ -302,16 +302,16 @@ html, body, iframe {
     background: url(../images/icon_cms.png) no-repeat 10px -168px;
 }
 
-.navTree_withdrawal_manager {
-    background: url(../images/icon_cms.png) no-repeat 10px -126px;
+.navTree_message_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -114px;
 }
 
 .navTree_auth_manager {
-    background: url(../images/icon_cms.png) no-repeat 10px -40px;
+    background: url(../images/icon_cms.png) no-repeat 10px 0px;
 }
 
-.navTree_charge_mobile_manager {
-    background: url(../images/icon_cms.png) no-repeat 10px -210px;
+.navTree_charge_client_manager {
+    background: url(../images/icon_cms.png) no-repeat 10px -37px;
 }
 
 .navTree_charge_repayment {

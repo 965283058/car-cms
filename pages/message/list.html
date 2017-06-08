@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>信息管理</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/default/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/themes/icon.css">
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/userIcon.css">
+
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../static/js/common.js"></script>
+    <script type="text/javascript" src="../../static/js/extend.js"></script>
+    <script type="text/javascript" src="../../static/js/validate.js"></script>
+    <script type="text/javascript" src="../../static/js/juicer-min.js"></script>
+
+
+</head>
+<body>
+<div id="container" class="container">
+    <div class="searchBox">
+        <form id="searchForm">
+            <div class="inputWrap">
+                <label>城市：<input type="text" name="city"></label>
+            </div>
+            <div class="inputWrap">
+                <label>出发城市：<input type="text" name="cityFrom"></label>
+            </div>
+            <div class="inputWrap">
+                <label>信息内容：<input type="text" name="content"></label>
+            </div>
+
+            <div class="inputWrap">
+                <label>电话：<input type="text" name="tel"></label>
+            </div>
+
+            <div class="inputWrap">
+                <label>发布者：<input type="text" name="sender"></label>
+            </div>
+        </form>
+        <div class="btnWrap">
+            <button class="hk-btn search" id="btnSearch">查询
+            </button>
+            <button class="hk-btn reset" id="btnReset">重置
+            </button>
+
+        </div>
+
+    </div>
+    <div class="searchResult">
+        <div class="dgWarp">
+            <div class="dgBox">
+                <div id="billLog"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+</body>
+<script>
+
+
+    function list() {
+        var params = $("#searchForm").serializeJson()
+        $("#billLog").datagrid({
+            title: "消息列表",
+            url: '/message/list',
+            queryParams: params,
+            rownumbers: false,
+            singleSelect: true,
+            columns: [[
+                {
+                    field: 'id',
+                    title: '操作',
+                    width: '135',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return '<div class="gridCellBtn" onclick="del(\'+"value"+\')">删除</div>'
+                    }
+                },
+                {
+                    field: 'number',
+                    title: '序号',
+                    width: '3%',
+                    align: 'center'
+                },
+                {
+                    field: 'city',
+                    title: '城市',
+                    width: '150',
+                    align: 'center',
+                },
+                {
+                    field: 'cityFrom',
+                    title: '出发城市',
+                    width: '80',
+                    align: 'center'
+                },
+                {
+                    field: 'type',
+                    title: '信息类型',
+                    width: '80',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return value == 1 ? "货源" : "车源"
+                    }
+                },
+                {
+                    field: 'content',
+                    title: '信息内容',
+                    width: '135',
+                    align: 'center'
+                },
+                {
+                    field: 'tel',
+                    title: '电话',
+                    width: '135',
+                    align: 'center',
+
+                },
+                {
+                    field: 'sender',
+                    title: '发布者',
+                    align: 'center',
+                    width: '200',
+                },
+
+
+                {
+                    field: 'source',
+                    title: '来源',
+                    width: '200',
+                    align: 'center'
+                },
+                {
+                    field: 'repeatCount',
+                    title: '重发次数',
+                    width: '100',
+                    align: 'center'
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    width: '150',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return $.converToCNDate(value)
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    width: '135',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return $.converToCNDate(value)
+                    }
+                },
+
+            ]],
+            pagination: true,
+            onLoadSuccess: function (data) {
+            }
+        })
+    }
+
+    function del(id) {
+        $.messager.confirm("提示", "您确定删除该条消息吗？", function (result) {
+            if (result) {
+                common.ajax({
+                    url: '/message/del',
+                    type: "post",
+                    data: {id: id},
+                    succ: function (res) {
+                        $.messager.alert('提示', '删除成功');
+                        list()
+                    }
+                });
+            }
+        })
+    }
+
+    $(function () {
+        list()
+        $("#btnSearch").click(list);
+        //重置按钮
+        $("#btnReset").click(function () {
+            $("#searchForm").form('reset');
+        })
+    })
+</script>
+</html>
