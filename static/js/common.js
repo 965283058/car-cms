@@ -61,6 +61,10 @@ var common = (function (api) {
             processData: (option.processData === undefined ? true : option.processData),
             contentType: (option.contentType === undefined ? $.ajaxSettings.contentType : option.contentType),
             success: function (res) {
+                if(!res){
+                    window.top.location.href = '/login.html';
+                    return
+                }
                 if (res.status) {
                     if (res.status == 10101001) {
                         console.log(res.message); //登陆超时

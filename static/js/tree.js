@@ -82,7 +82,6 @@ $(function () {
             } else {
                 $('#navTree').tree('expand', node.target);
             }
-            ;
             var tt = $('#main-center');
             if (tt.tabs('exists', node.text)) {
                 tt.tabs('select', node.text);
@@ -112,6 +111,11 @@ $(function () {
     });
 });
 
+$(window).resize(function () {
+    var tt = $('#main-center');
+    var iHeight = (tt.height() - 30) + 'px';
+    $('.panel-body>iframe').css("height",iHeight)
+})
 
 
 

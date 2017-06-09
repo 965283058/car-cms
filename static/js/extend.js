@@ -20,7 +20,7 @@ $.extend($.fn.datagrid.defaults, {
             data: param,
             dataType: "json",
             succ: function (data) {
-                gridSuccess(data);
+                gridSuccess(data)
             },
             fail: function (res) {
                 $.messager.alert('警告', res.message + "\n错误：" + res.status);
@@ -61,7 +61,7 @@ $.extend($.fn.datagrid.defaults, {
                 }
             }
             if (typeof resText.data === 'object') {
-                _data.rows = resText.data.elements;
+                _data.rows = resText.data;
                 for (var i = 0; i < _data.rows.length; i++) {
                     _data.rows[i].number = i + 1;
                 }
