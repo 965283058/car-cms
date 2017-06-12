@@ -590,7 +590,9 @@ html, body {
 
 /*hehheh*/
 
-
+.datagrid-row-selected a{
+    color: #fff;
+}
 
 
 

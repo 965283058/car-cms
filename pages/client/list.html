@@ -18,48 +18,177 @@
     <script type="text/javascript" src="../../static/js/validate.js"></script>
     <script type="text/javascript" src="../../static/js/juicer-min.js"></script>
 
-
+    <style>
+        #advert{
+            width: 90%;
+        }
+        #advert td{
+            border: 1px solid #00a0e2;
+            padding: 0 10px;
+            height: 30px;
+        }
+        #advert td.title{
+            width: 70px;
+        }
+        #advert td.content{
+            width: auto;
+        }
+        .btnTd{
+           width: 70px;vertical-align: middle ;
+        }
+    </style>
 </head>
 <body>
-<div id="container" class="container">
-    <div class="searchResult">
+<div id="cc" class="easyui-layout" style="height: 100%">
+    <div data-options="region:'north',title:'广告信息',split:true" style="height:150px;">
+        <table id="advert" class="cells" style="">
+            <tr>
+                <td class="title" >顶部：</td>
+                <td  id="top" class="content" ></td>
+                <td class="btnTd" >
+                    <button class="hk-btn edit" onclick="editAdvert('top')">修改</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="title">底部：</td>
+                <td id="bottom" class="content"></td>
+                <td class="btnTd" >
+                    <button class="hk-btn edit" onclick="editAdvert('bottom')">修改</button>
+                </td>
+            </tr>
+
+
+        </table>
+
+        <div id="advertDialog" style="display: none">
+            <form name="userForm">
+                <input type="hidden" name="type">
+                <table class="cells">
+                    <tr>
+                        <td class="title" >类型：</td>
+                        <td class="content">
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="title" valign="top">内容：</td>
+                        <td class="content"><textarea rows="10" type="text" name="value"></textarea></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+    </div>
+
+    <div data-options="region:'center',title:'通知列表'" >
         <div id="dg"></div>
+
+
+        <div id="user" style="display: none">
+            <form name="userForm">
+                <table class="cells">
+                    <tr>
+                        <td class="title" >标题：</td>
+                        <td class="content" ><input type="text" name="title"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="title" valign="top">内容：</td>
+                        <td class="content"><textarea rows="8" type="text" name="content"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="title">链接：</td>
+                        <td class="content"><input type="text" name="url"></td>
+                    </tr>
+
+
+                </table>
+            </form>
+        </div>
     </div>
-
-
-    <div id="user" style="display: none">
-        <form name="userForm">
-            <table class="cells">
-                <tr>
-                    <td class="title" >标题：</td>
-                    <td class="content" ><input type="text" name="title"></td>
-                </tr>
-
-                <tr>
-                    <td class="title" valign="top">内容：</td>
-                    <td class="content"><textarea rows="8" type="text" name="content"></textarea></td>
-                </tr>
-                <tr>
-                    <td class="title">链接：</td>
-                    <td class="content"><input type="text" name="url"></td>
-                </tr>
-
-
-            </table>
-        </form>
     </div>
+</div>
 
-</div>
-</div>
+
 
 </body>
 <script>
+    function AdvertList() {
+        $.modalWait("open",{
+            msg:"加载中..."
+        })
+       common.ajax({
+           url:'/client/getAdvert',
+           succ:function (res) {
+               if(res&&typeof res=="string"){
+                   res=JSON.parse(res)
+               }
+               $("#top").html(res.data.top)
+               $("#bottom").html(res.data.bottom)
+           },
+           complete:function (err) {
+               $.modalWait("close")
+           }
+       })
+    }
+
+    function editAdvert(type){
+        $.createOnlyDiv('adver-dialog');
+        var $dialog = $("#adver-dialog")
+        $dialog.dialog({
+            title: '【修改广告信息】',
+            width: 330,
+            height: 370,
+            closed: false,
+            cache: false,
+            modal: true,
+            content: $("#advertDialog").html(),
+            buttons: [{
+                text: '提交处理',
+                iconCls: 'icon-save',
+                handler: function () {
+                    var userForm = $dialog.find("form[name=userForm]");
+                    if (userForm.form("validate")) {
+                        var data = userForm.serializeJson();
+                        common.ajax({
+                            url: '/client/updateAdvert',
+                            type: "post",
+                            data: data,
+                            succ: function (res) {
+                                $dialog.dialog("destroy");
+                                $.messager.alert('提示', '修改成功');
+                                AdvertList()
+                            }
+                        });
+                    }
+                }
+            }, {
+                text: '取消',
+                iconCls: 'icon-cancel',
+                handler: function () {
+                    $dialog.dialog('destroy');
+                }
+            }]
+        })
+        $dialog.find("td:eq(1)").html($("#"+type).prev("td").html().replace('：',''))
+        $dialog.find("input[name=type]").val(type);
+
+        $dialog.find("textarea[name=value]").val( $("#"+type).html()).validatebox({
+            required: true,
+            validateOnCreate: false
+        });
+    }
 
 
 
-    function list() {
+    /*-------------------------------------*/
+
+
+    function NoticeList() {
         $("#dg").datagrid({
-            title: "通知列表",
+//            title: "通知列表",
             url: '/client/noticeList',
             singleSelect: true,
             columns: [[
@@ -127,7 +256,7 @@
             toolbar: [{
                 iconCls: 'hk-icon-refresh',
                 text:'刷新列表',
-                handler: function(){list()}
+                handler: function(){NoticeList()}
             },'-',{
                 iconCls: 'icon-add',
                 text:'添加通知',
@@ -199,7 +328,7 @@
                     data: {id: id},
                     succ: function (res) {
                         $.messager.alert('提示', '发送成功');
-                        list()
+                        NoticeList()
                     }
                 });
             }
@@ -216,7 +345,7 @@
                     data: {id: id},
                     succ: function (res) {
                         $.messager.alert('提示', '启用成功');
-                        list()
+                        NoticeList()
                     }
                 });
             }
@@ -225,10 +354,10 @@
 
 
     $(function () {
-        list()
-        $("#btnSearch").click(list);
 
-        $("#btnAdd").click(addUser)
+        AdvertList()
+
+        NoticeList()
 
         $("body").on("mouseover", "div.text-overflow", function () {
             $(this).tooltip({
