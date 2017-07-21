@@ -59,12 +59,12 @@ $.extend($.fn.datagrid.defaults, {
                         _data.total = resText.data.pageInfo.totalElements;
                     }
                 }
-            }
-            if (typeof resText.data === 'object') {
+                _data.rows=resText.data.elements
+            }else if (typeof resText.data === 'object') {
                 _data.rows = resText.data;
-                for (var i = 0; i < _data.rows.length; i++) {
-                    _data.rows[i].number = i + 1;
-                }
+            }
+            for (var i = 0; i < _data.rows.length; i++) {
+                _data.rows[i].number = i + 1;
             }
             return _data;
         } else {
