@@ -497,8 +497,8 @@ html, body {
     font-weight: 400;
     text-align: center;
     white-space: nowrap;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
+    /*-ms-touch-action: manipulation;*/
+    /*touch-action: manipulation;*/
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -507,7 +507,11 @@ html, body {
     border-radius: 4px;
     opacity: 1;
     background-color: transparent !important;
+
+    box-shadow: none;
+    outline: none;
 }
+
 
 .hk-btn:hover {
     border-color: #bdbdbd;

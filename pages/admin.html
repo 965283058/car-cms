@@ -2,23 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>后台管理系统</title>
     <link rel="stylesheet" type="text/css" href="../static/css/themes/default/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="../static/css/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="../static/css/themes/icon.css">
     <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/hk-style.css">
 
     <script type="text/javascript" src="../static/js/jquery.min.js"></script>
     <script type="text/javascript" src="../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="../static/js/common.js"></script>
+    <script type="text/javascript" src="../../static/js/extend.js"></script>
     <script type="text/javascript" src="../static/js/tree.js"></script>
-    <title>后台管理系统</title>
+    <script type="text/javascript" src="../../static/js/validate.js"></script>
 </head>
 <body class="easyui-layout">
 <div data-options="region:'north',title:'North Title',split:true, noheader:true" class="header">
     <p class="h2 indexTitle">后台管理系统</p>
     <p class="indexAdmin">
         <span>欢迎你，<i id="adminerName"></i></span>
-        <span><a href="resetPassword.html">修改密码</a></span>
+        <span><a href="javascript:;" onclick="changePwd()">修改密码</a></span>
         <span><a href="javascript:;" onclick="loginoutSure()">退出</a></span>
     </p>
 </div>
@@ -36,6 +40,24 @@
                 <p>&nbsp;</p>
             </div>
         </div>
+    </div>
+    <div id="user" style="display: none">
+        <form name="userForm">
+            <table class="cells">
+                <tr>
+                    <td class="title">密码：</td>
+                    <td class="content"><input type="text" name="oldPwd"></td>
+                </tr>
+                <tr>
+                    <td class="title">新密码：</td>
+                    <td class="content"><input type="text" name="newPwd"></td>
+                </tr>
+                <tr>
+                    <td class="title">新密码确认：</td>
+                    <td class="content"><input type="text" name="pwdConfirm"></td>
+                </tr>
+            </table>
+        </form>
     </div>
 </div>
 
@@ -77,4 +99,69 @@
     $(function () {
         $("#adminerName").text(localStorage.adminName);
     })
+    
+
+
+    function changePwd() {
+        var user=localStorage.adminName;
+        $.createOnlyDiv('user-dialog');
+        var $dialog=$("#user-dialog")
+        $dialog.dialog({
+            title: '【修改密码】',
+            width: 400,
+            height: 220,
+            closed: false,
+            cache: false,
+            modal: true,
+            content: $("#user").html(),
+            buttons: [{
+                text: '确定',
+                iconCls: 'icon-save',
+                handler: function () {
+                    var userForm = $("#user-dialog").find("form[name=userForm]");
+                    if (userForm.form("validate")) {
+                        var data = userForm.serializeJson();
+                        data.name=user
+                        common.ajax({
+                            url: '/manager/updatePwd',
+                            type: "get",
+                            data: data,
+                            succ: function (res) {
+                                $("#user-dialog").dialog("destroy");
+                                $.messager.alert('提示', '修改成功');
+                            }
+                        });
+                    }
+                }
+            }, {
+                text: '取消',
+                iconCls: 'icon-cancel',
+                handler: function () {
+                    $("#user-dialog").dialog('destroy');
+                }
+            }]
+        })
+
+        $dialog.find("input[name=oldPwd]").passwordbox({
+            showEye: true,
+            required: true,
+            validateOnCreate: false,
+            validType: 'pwd'
+        });
+        $dialog.find("input[name=newPwd]").passwordbox({
+            showEye: true,
+            required: true,
+            validateOnCreate: false,
+            validType: 'pwd'
+        });
+        $dialog.find("input[name=pwdConfirm]").passwordbox({
+            showEye: true,
+            required: true,
+            validateOnCreate: false,
+            validType: "equlse['input[name=newPwd].textbox-value']"
+        });
+    }
+
+
+
 </script>

@@ -57,7 +57,7 @@ html, body, iframe {
 * login
 */
 .article {
-    background: url(../images/heika.jpg) no-repeat center;
+    background: url(../images/login_bg.jpg) no-repeat center;
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -72,8 +72,9 @@ html, body, iframe {
 
 .testPosition {
     position: absolute;
-    left: 65%;
-    top: 10%;
+    left: 50%;
+    top: 20%;
+    margin-left: -200px;
 }
 
 .loginTitle {
@@ -148,57 +149,12 @@ html, body, iframe {
     margin-top: 3px
 }
 
-/*
-*  resetPassword
-*/
-.article {
-    background: url(../images/heika.jpg) no-repeat center;
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    overflow: auto;
-    width: 100%;
-    background-size: cover;
-}
 
-.content {
-    width: 400px;
-}
 
-.testPosition {
-    position: absolute;
-    left: 65%;
-    top: 10%;
-}
 
-.loginTitle {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #a8a8a8;
-}
 
-.loginInput {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #757575;
-    color: #e0b96e;
-}
 
-.loginButton {
-    background: #24272e;
-    margin-bottom: 25px;
-    color: #e0b96e;
-}
 
-.errorStyle {
-    width: 320px;
-    height: 34px;
-    margin-top: 10px;
-    margin-left: 40px;
-    display: none;
-    font-size: 14px;
-    color: #e0b96e;
-}
 
 .publicErrorPar {
     position: relative;

@@ -20,7 +20,7 @@
 
     <style>
         #advert{
-            width: 90%;
+            width: 50%;
         }
         #advert td{
             border: 1px solid #00a0e2;
@@ -41,7 +41,7 @@
 <body>
 <div id="cc" class="easyui-layout" style="height: 100%">
     <div data-options="region:'north',title:'广告信息',split:true" style="height:150px;">
-        <table id="advert" class="cells" style="">
+        <table id="advert" class="cells" >
             <tr>
                 <td class="title" >顶部：</td>
                 <td  id="top" class="content" ></td>
@@ -312,7 +312,6 @@
             validateOnCreate: false
         });
         $dialog.find("input[name=url]").validatebox({
-            required: true,
             validateOnCreate: false,
             validType:'url'
         });

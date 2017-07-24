@@ -73,15 +73,6 @@
             singleSelect: true,
             columns: [[
                 {
-                    field: 'id',
-                    title: '操作',
-                    width: '100',
-                    align: 'center',
-                    formatter: function (value, row, index) {
-                        return '<a class="gridCellBtn gridCellBtn--error" onclick="del(\'' + value + '\')">删除</a>'
-                    }
-                },
-                {
                     field: 'number',
                     title: '序号',
                     width: '70',
@@ -163,6 +154,15 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         return $.converToCNDate(value)
+                    }
+                },
+                {
+                    field: 'id',
+                    title: '操作',
+                    width: '100',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return '<a class="gridCellBtn gridCellBtn--error" onclick="del(\'' + value + '\')">删除</a>'
                     }
                 },
 
